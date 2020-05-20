@@ -1,0 +1,2 @@
+﻿dotnet ef dbcontext scaffold "server=PIETRAS.DK\PIETRASSQL,52384;database=PlayIt;user=PlayIt;pwd=pVG553c@Yia7Ft7u3D*mvGi*ay!z5LLi" -o .\Models\Entities Microsoft.EntityFrameworkCore.SqlServer -f
+

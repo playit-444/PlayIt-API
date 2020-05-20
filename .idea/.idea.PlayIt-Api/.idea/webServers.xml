@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="a02b0939-36d8-4d4b-b176-098988b5bb4a" name="Api 444" url="http://api.444.dk">
+        <fileTransfer rootFolder="/api.444.dk" accessType="FTPS" host="api.444.dk" port="21">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

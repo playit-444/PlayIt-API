@@ -28,6 +28,12 @@ namespace PlayIt_Api.Services.GameType
             return await gameRepo.GetPagedListAsync();
         }
 
+        public async Task<Models.Entities.GameType> GetGameType(int gameTypeId)
+        {
+            var gameRepo = _unitOfWork.GetRepository<Models.Entities.GameType>();
+            return await gameRepo.GetFirstOrDefaultAsync(predicate: a => a.GameTypeId == gameTypeId);
+        }
+
         public void Dispose()
         {
             Dispose(true);

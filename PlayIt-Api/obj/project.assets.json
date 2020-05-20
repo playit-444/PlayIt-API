@@ -9412,8 +9412,8 @@
     },
     "Common/1.0.0": {
       "type": "project",
-      "path": "../../PlayIt-GameEngine/Common/Common.csproj",
-      "msbuildProject": "../../PlayIt-GameEngine/Common/Common.csproj"
+      "path": "../Common/Common.csproj",
+      "msbuildProject": "../Common/Common.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -9434,7 +9434,7 @@
   },
   "packageFolders": {
     "C:\\Users\\Christoffer\\.nuget\\packages\\": {},
-    "C:\\Microsoft\\Xamarin\\NuGet\\": {},
+    "C:\\Microsoft\\Xamarin\\NuGet": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
@@ -9447,7 +9447,7 @@
       "outputPath": "C:\\Users\\Christoffer\\RiderProjects\\RiderProjects\\PlayIt-Api\\PlayIt-Api\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "C:\\Microsoft\\Xamarin\\NuGet\\",
+        "C:\\Microsoft\\Xamarin\\NuGet",
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
@@ -9465,6 +9465,9 @@
       "frameworks": {
         "netcoreapp3.1": {
           "projectReferences": {
+            "C:\\Users\\Christoffer\\RiderProjects\\RiderProjects\\PlayIt-Api\\Common\\Common.csproj": {
+              "projectPath": "C:\\Users\\Christoffer\\RiderProjects\\RiderProjects\\PlayIt-Api\\Common\\Common.csproj"
+            },
             "C:\\Users\\Christoffer\\RiderProjects\\RiderProjects\\PlayIt-GameEngine\\Common\\Common.csproj": {
               "projectPath": "C:\\Users\\Christoffer\\RiderProjects\\RiderProjects\\PlayIt-GameEngine\\Common\\Common.csproj"
             }

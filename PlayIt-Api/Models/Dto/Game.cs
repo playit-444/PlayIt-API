@@ -18,5 +18,7 @@ namespace PlayIt_Api.Models.Dto
             CurrentUsers = currentUsers;
             Private = @private;
         }
+
+        public int PacketId { get; }
     }
 }

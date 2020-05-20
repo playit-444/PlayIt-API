@@ -58,6 +58,32 @@ namespace PlayIt_Api.Controllers
             return BadRequest("an error occured whilst getting gameTypes");
         }
 
+        /// <summary>
+        /// Get specific gameType
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet("{gameTypeId}")]
+        [ProducesResponseType(typeof(IPagedList<GameType>), (int) HttpStatusCode.OK)]
+        [ProducesResponseType((int) HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> GetType(int gameTypeId)
+        {
+            try
+            {
+                var gameTypes = await _gameInformationService.GetGameType(gameTypeId);
+                if (gameTypes != null)
+                {
+                    return Ok(gameTypes);
+                }
+            }
+            catch (Exception)
+            {
+                return BadRequest("an error occured whilst trying to get all gameTypes");
+            }
+
+            return BadRequest("an error occured whilst getting gameTypes");
+        }
+
         //TODO REMOVE THIS
         [AllowAnonymous]
         [HttpGet("test")]
@@ -67,8 +93,8 @@ namespace PlayIt_Api.Controllers
             var group = new MultithreadEventLoopGroup();
 
             //var serverIP = IPAddress.Parse("127.0.0.1");
-            var serverIP = IPAddress.Parse("127.0.0.1");
-            int serverPort = 8080;
+            var serverIP = IPAddress.Parse("185.50.193.81");
+            int serverPort = 8282;
 
             try
             {

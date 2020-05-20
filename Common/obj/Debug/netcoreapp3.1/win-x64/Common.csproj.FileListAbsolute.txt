@@ -1,0 +1,9 @@
+C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-GameEngine\Common\bin\Debug\netcoreapp3.1\win-x64\Common.deps.json
+C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-GameEngine\Common\bin\Debug\netcoreapp3.1\win-x64\Common.dll
+C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-GameEngine\Common\bin\Debug\netcoreapp3.1\win-x64\Common.pdb
+C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-GameEngine\Common\obj\Debug\netcoreapp3.1\win-x64\Common.csprojAssemblyReference.cache
+C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-GameEngine\Common\obj\Debug\netcoreapp3.1\win-x64\Common.csproj.CoreCompileInputs.cache
+C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-GameEngine\Common\obj\Debug\netcoreapp3.1\win-x64\Common.AssemblyInfoInputs.cache
+C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-GameEngine\Common\obj\Debug\netcoreapp3.1\win-x64\Common.AssemblyInfo.cs
+C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-GameEngine\Common\obj\Debug\netcoreapp3.1\win-x64\Common.dll
+C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-GameEngine\Common\obj\Debug\netcoreapp3.1\win-x64\Common.pdb

@@ -7,9 +7,15 @@ namespace PlayIt_Api.Services.GameType
     public interface IGameTypeService : IDisposable
     {
         /// <summary>
-        /// Get game types
+        /// Get all game types
         /// </summary>
         /// <returns></returns>
         Task<IPagedList<Models.Entities.GameType>> GetGameTypes();
+        /// <summary>
+        /// Get specific game type
+        /// </summary>
+        /// <returns></returns>
+        Task<Models.Entities.GameType> GetGameType(int gameTypeId);
+
     }
 }

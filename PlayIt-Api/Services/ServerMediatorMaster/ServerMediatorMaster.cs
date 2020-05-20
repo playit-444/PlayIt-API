@@ -135,7 +135,7 @@ namespace PlayIt_Api.Services.ServerMediatorMaster
 
         public ServerMediatorMaster()
         {
-            Port = 8080;
+            Port = 8282;
             ServerID = new Guid();
             GameTypes = new Dictionary<int, string>();
             servers = new Dictionary<IChannelId, Guid>();

@@ -1,4 +1,4 @@
-﻿namespace Common.Networking.Handlers
+﻿﻿namespace Common.Networking.Handlers
 {
     public interface IMagicNumber
     {

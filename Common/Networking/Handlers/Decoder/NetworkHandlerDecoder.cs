@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using Common.Networking.Data.Game;
 using Common.Networking.Data.Player;

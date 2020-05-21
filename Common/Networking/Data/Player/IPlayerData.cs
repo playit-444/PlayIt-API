@@ -1,4 +1,4 @@
-﻿using Common.Networking.Handlers;
+﻿﻿using Common.Networking.Handlers;
 
 namespace Common.Networking.Data.Player
 {

@@ -1,4 +1,4 @@
-﻿
+﻿﻿
 namespace Common.Networking.Data.Player
 {
     public class PlayerRequestData : IPlayerRequestData

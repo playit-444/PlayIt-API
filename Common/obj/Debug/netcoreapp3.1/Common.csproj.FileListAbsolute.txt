@@ -15,3 +15,12 @@ C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-GameEngine\Common\obj\De
 C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-GameEngine\Common\obj\Debug\netcoreapp3.1\Common.AssemblyInfo.cs
 C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-GameEngine\Common\obj\Debug\netcoreapp3.1\Common.dll
 C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-GameEngine\Common\obj\Debug\netcoreapp3.1\Common.pdb
+C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-Api\Common\bin\Debug\netcoreapp3.1\Common.deps.json
+C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-Api\Common\bin\Debug\netcoreapp3.1\Common.dll
+C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-Api\Common\bin\Debug\netcoreapp3.1\Common.pdb
+C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-Api\Common\obj\Debug\netcoreapp3.1\Common.csprojAssemblyReference.cache
+C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-Api\Common\obj\Debug\netcoreapp3.1\Common.csproj.CoreCompileInputs.cache
+C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-Api\Common\obj\Debug\netcoreapp3.1\Common.AssemblyInfoInputs.cache
+C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-Api\Common\obj\Debug\netcoreapp3.1\Common.AssemblyInfo.cs
+C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-Api\Common\obj\Debug\netcoreapp3.1\Common.dll
+C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-Api\Common\obj\Debug\netcoreapp3.1\Common.pdb

@@ -9467,9 +9467,6 @@
           "projectReferences": {
             "C:\\Users\\Christoffer\\RiderProjects\\RiderProjects\\PlayIt-Api\\Common\\Common.csproj": {
               "projectPath": "C:\\Users\\Christoffer\\RiderProjects\\RiderProjects\\PlayIt-Api\\Common\\Common.csproj"
-            },
-            "C:\\Users\\Christoffer\\RiderProjects\\RiderProjects\\PlayIt-GameEngine\\Common\\Common.csproj": {
-              "projectPath": "C:\\Users\\Christoffer\\RiderProjects\\RiderProjects\\PlayIt-GameEngine\\Common\\Common.csproj"
             }
           }
         }

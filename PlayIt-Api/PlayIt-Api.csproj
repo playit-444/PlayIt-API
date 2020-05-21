@@ -6,7 +6,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\PlayIt-GameEngine\Common\Common.csproj" />
       <ProjectReference Include="..\Common\Common.csproj" />
     </ItemGroup>
 

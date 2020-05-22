@@ -1,4 +1,4 @@
-﻿﻿using Common.Networking.Data.Server;
+﻿﻿﻿using Common.Networking.Data.Server;
 using DotNetty.Buffers;
 using DotNetty.Codecs;
 using DotNetty.Transport.Channels;
@@ -19,7 +19,7 @@ namespace Common.Networking.Handlers.Encoders
             if (message == null)
                 return;
 
-            output.Add(ByteBufferUtil.EncodeString(context.Allocator, $"{message.PacketId}:{message.ServerID}",
+            output.Add(ByteBufferUtil.EncodeString(context.Allocator, $"{message.PacketId}{Environment.NewLine}{message.ServerID}",
                 Encoding.UTF8));
         }
     }

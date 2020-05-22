@@ -1,4 +1,4 @@
-﻿﻿namespace Common.Networking.Data.Room
+﻿﻿﻿namespace Common.Networking.Data.Room
 {
     public class GameRoomData : IGameRoomData
     {

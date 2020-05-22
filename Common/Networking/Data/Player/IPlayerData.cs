@@ -1,4 +1,4 @@
-﻿﻿using Common.Networking.Handlers;
+﻿﻿﻿using Common.Networking.Handlers;
 
 namespace Common.Networking.Data.Player
 {
@@ -6,7 +6,7 @@ namespace Common.Networking.Data.Player
     /// PlayerData object for storing player data upon it being requested by the gameserver
     /// PacketId = 3
     /// </summary>
-    public interface IPlayerData : IMagicNumber
+    public interface IPlayerData : IPacketId
     {
         /// <summary>
         /// The session key used when initially requesting the data

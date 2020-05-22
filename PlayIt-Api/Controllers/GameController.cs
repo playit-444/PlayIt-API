@@ -11,7 +11,7 @@ namespace PlayIt_Api.Controllers
     /// <summary>
     /// Controller responsible for CRUD Account
     /// </summary>
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class GameController : ControllerBase
@@ -38,7 +38,7 @@ namespace PlayIt_Api.Controllers
                 var serverRooms = _gameService.GetGameByType(gameTypeId);
                 if (serverRooms != null)
                 {
-                    Ok(serverRooms);
+                    return Ok(serverRooms);
                 }
 
                 return NotFound(new Response("Der findes ingen lobbys"));

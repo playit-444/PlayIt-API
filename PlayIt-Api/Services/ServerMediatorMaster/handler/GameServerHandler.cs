@@ -1,4 +1,5 @@
-﻿using Common.Networking.Data.Server;
+﻿using System;
+using Common.Networking.Data.Server;
 using DotNetty.Transport.Channels;
 
 namespace PlayIt_Api.Services.ServerMediatorMaster.handler
@@ -10,9 +11,17 @@ namespace PlayIt_Api.Services.ServerMediatorMaster.handler
         /// </summary>
         /// <param name="ctx"></param>
         /// <param name="msg"></param>
-        protected override void ChannelRead0(IChannelHandlerContext ctx, IGameServerData msg)
+
+        private readonly Guid _serverId;
+        public GameServerHandler(Guid serverId)
+        {
+            _serverId = serverId;
+        }
+        protected override async void ChannelRead0(IChannelHandlerContext ctx, IGameServerData msg)
         {
             ServerMediatorMaster.AddGameServer(msg.ServerID, ctx.Channel.Id);
+            await ctx.Channel.WriteAndFlushAsync(new GameServerData(_serverId));
+
         }
     }
 }

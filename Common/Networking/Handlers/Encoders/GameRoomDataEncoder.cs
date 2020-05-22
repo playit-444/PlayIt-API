@@ -1,4 +1,5 @@
-﻿﻿using Common.Networking.Data.Player;
+﻿﻿﻿using System;
+using Common.Networking.Data.Player;
 using DotNetty.Buffers;
 using DotNetty.Codecs;
 using DotNetty.Transport.Channels;
@@ -11,14 +12,15 @@ namespace Common.Networking.Handlers.Encoders
     {
         protected override void Encode(IChannelHandlerContext context, IGameRoomData message, List<object> output)
         {
-            if (string.IsNullOrEmpty(message.Name) ||string.IsNullOrEmpty(message.RoomID) || message.GameType.Equals(0))
+            if (string.IsNullOrEmpty(message.RoomID) || message.GameType.Equals(0))
                 return;
 
             output.Add(
                 ByteBufferUtil.EncodeString(
                     context.Allocator,
-                    $"{message.PacketId}:{message.RoomID}:{message.Name}:{message.MaxUsers}:{message.CurrentUsers}:{message.Private}:{message.GameType}:{message.PacketId}",
-                    System.Text.Encoding.UTF8));
+                    $"{message.PacketId}{Environment.NewLine}{message.RoomID}:{message.Name}:{message.MaxUsers}:{message.CurrentUsers}:{message.Private}:{message.GameType}",
+                    System.Text.Encoding.UTF8,
+                    10));
         }
     }
 }

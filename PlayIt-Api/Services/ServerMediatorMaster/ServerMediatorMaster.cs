@@ -25,21 +25,30 @@ namespace PlayIt_Api.Services.ServerMediatorMaster
         /// <summary>
         /// GameTypes from db saved in Dictionary to save lookup to database
         /// </summary>
+        private static IDictionary<int, string> gameTypes;
 
         // Public GameTypes
-        public IDictionary<int, string> GameTypes { get; }
+        public IDictionary<int, string> GameTypes
+        {
+            get => gameTypes;
+            set => gameTypes = value;
+        }
 
         //GameTypes from db
-        private void GetGameTypes()
+        private void GetGameTypesFromDb()
         {
             var gameTypesRepo = _unitOfWork.GetRepository<Models.Entities.GameType>();
-            var gameTypes = gameTypesRepo.GetPagedList();
-            foreach (var gameType in gameTypes.Items)
+            var gameTypesList = gameTypesRepo.GetPagedList();
+            foreach (var gameType in gameTypesList.Items)
             {
-                GameTypes.Add(gameType.GameTypeId, gameType.Name);
+                gameTypes.Add(gameType.GameTypeId, gameType.Name);
             }
         }
 
+        public static IDictionary<int, string> GetGameTypes()
+        {
+            return gameTypes;
+        }
 
         /// <summary>
         /// Dictionary of lobby
@@ -62,25 +71,24 @@ namespace PlayIt_Api.Services.ServerMediatorMaster
         }
 
         // Add Server Room
-        public static void AddServerRooms(Guid guid, HashSet<IRoomData> roomDataHash, IRoomData roomData)
+        public static void AddServerRooms(Guid guid, IRoomData roomData)
         {
-            if (!serverRooms.ContainsKey(guid))
-            {
-                lock (serverRooms)
-                {
-                    roomDataHash.Add(roomData);
-                    serverRooms.Add(guid, roomDataHash);
-                }
-            }
-            else
+            if (serverRooms.ContainsKey(guid))
             {
                 lock (serverRooms)
                 {
                     serverRooms[guid].Add(roomData);
                 }
             }
+            else
+            {
+                lock (serverRooms)
+                {
+                    serverRooms.Add(guid, new HashSet<IRoomData>());
+                    serverRooms[guid].Add(roomData);
+                }
+            }
         }
-
 
         /// <summary>
         /// Dictionary of game servers
@@ -99,7 +107,7 @@ namespace PlayIt_Api.Services.ServerMediatorMaster
         // Get GameServer by channelId
         public static Guid GetGameServerGuid(IChannelId channelId)
         {
-            if (!servers.ContainsKey(channelId))
+            if (servers.ContainsKey(channelId))
             {
                 return servers[channelId];
             }
@@ -136,14 +144,15 @@ namespace PlayIt_Api.Services.ServerMediatorMaster
         public ServerMediatorMaster()
         {
             Port = 8282;
-            ServerID = new Guid();
+            ServerID = Guid.NewGuid();
             GameTypes = new Dictionary<int, string>();
             servers = new Dictionary<IChannelId, Guid>();
+            serverRooms = new Dictionary<Guid, HashSet<IRoomData>>();
 
             _unitOfWork = new UnitOfWork<PlayItContext>(new PlayItContext());
             _logger = new DbExceptionLogger(_unitOfWork);
             StartServer();
-            GetGameTypes();
+            GetGameTypesFromDb();
         }
 
         private async void StartServer()
@@ -152,31 +161,44 @@ namespace PlayIt_Api.Services.ServerMediatorMaster
             var workerGroup = new MultithreadEventLoopGroup();
             var bootstrap = new ServerBootstrap();
 
-            bootstrap
-                .Group(bossGroup, workerGroup)
-                .Channel<TcpServerSocketChannel>()
-                .Option(ChannelOption.SoBacklog, 100) // maximum queue length for incoming connection
-                .ChildHandler(new ActionChannelInitializer<ISocketChannel>(channel =>
-                {
-                    IChannelPipeline pipeline = channel.Pipeline;
-                    //Decoder
-                    pipeline.AddLast(new NetworkHandlerDecoder());
+            try
+            {
+                bootstrap
+                    .Group(bossGroup, workerGroup)
+                    .Channel<TcpServerSocketChannel>()
+                    .Option(ChannelOption.SoBacklog, 100) // maximum queue length for incoming connection
+                    .Option(ChannelOption.SoRcvbuf, 8192)
+                    .Option(ChannelOption.SoSndbuf, 8192)
+                    .ChildHandler(new ActionChannelInitializer<ISocketChannel>(channel =>
+                    {
+                        IChannelPipeline pipeline = channel.Pipeline;
+                        //Decoder
+                        pipeline.AddLast(new NetworkHandlerDecoder());
 
-                    //Game ServerData
-                    pipeline.AddLast(new GameServerDataEncoder(), new GameServerHandler());
+                        //New GameServer connect to API
+                        pipeline.AddLast(new GameServerDataEncoder(), new GameServerHandler(ServerID));
 
-                    //Game ServerEventData //TODO
-                    //pipeline.AddLast(new GameServerEventDataEncoder(), new GameServerEventHandler());
+                        //Game ServerEventData (Stop/restart)
+                        //pipeline.AddLast(new GameServerEventDataEncoder(), new GameServerEventHandler());
 
-                    //Player RequestData
-                    pipeline.AddLast(new PlayerRequestDataEncoder(),
-                        new PlayerRequestDataHandler(_unitOfWork));
+                        //If gameServer request gameType
+                        pipeline.AddLast(new GameTypeRequestDataEncoder(), new GameTypeDataEncoder(),
+                            new GameTypeRequestHandler(_unitOfWork));
 
-                    //Game RoomData
-                    pipeline.AddLast(new GameRoomDataEncoder(), new GameRoomDataHandler());
-                }));
-            //IChannel boundChannel = await bootstrap.BindAsync(Port);
-            await bootstrap.BindAsync(Port);
+                        //Player RequestData (Validate if user is logged in, and return user information to GameServer
+                        pipeline.AddLast(new PlayerRequestDataEncoder(),
+                            new PlayerRequestDataHandler(_unitOfWork));
+
+                        //Game RoomData
+                        pipeline.AddLast(new GameRoomDataEncoder(), new GameRoomDataHandler());
+                    }));
+                await bootstrap.BindAsync(Port);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
     }
 }

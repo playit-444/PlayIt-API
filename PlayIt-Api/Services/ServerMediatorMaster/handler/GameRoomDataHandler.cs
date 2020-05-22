@@ -11,7 +11,7 @@ namespace PlayIt_Api.Services.ServerMediatorMaster.handler
         protected override void ChannelRead0(IChannelHandlerContext ctx, IGameRoomData msg)
         {
             var gameServerGuid = ServerMediatorMaster.GetGameServerGuid(ctx.Channel.Id);
-            ServerMediatorMaster.AddServerRooms(gameServerGuid, new HashSet<IRoomData>(),
+            ServerMediatorMaster.AddServerRooms(gameServerGuid,
                 new GameRoomData(msg.RoomID, msg.Name, msg.MaxUsers, msg.CurrentUsers, msg.Private, msg.GameType));
         }
     }

@@ -1,11 +1,11 @@
-﻿﻿using Common.Networking.Handlers;
+﻿﻿﻿using Common.Networking.Handlers;
 
 namespace Common.Networking.Data.Room
 {
     /// <summary>
     /// Room transfer data for sending a simple room state object
     /// </summary>
-    public interface IRoomData : IMagicNumber
+    public interface IRoomData : IPacketId
     {
         /// <summary>
         /// The ID of the room

@@ -31,7 +31,7 @@ namespace PlayIt_Api.Services.ServerMediatorMaster.handler
             _jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
         }
 
-        protected override void ChannelRead0(IChannelHandlerContext ctx, IPlayerRequestData msg)
+        protected override async void ChannelRead0(IChannelHandlerContext ctx, IPlayerRequestData msg)
         {
             SecurityToken validatedToken;
             IPrincipal principal;
@@ -57,7 +57,7 @@ namespace PlayIt_Api.Services.ServerMediatorMaster.handler
                 if (account != null)
                 {
                     //If account is not null send message to client
-                    ctx.Channel.WriteAndFlushAsync(new PlayerData(msg.SessionKey, account.AccountId, account.UserName));
+                    await ctx.Channel.WriteAndFlushAsync(new PlayerData(msg.SessionKey, account.AccountId, account.UserName));
                     return;
                 }
             }
@@ -67,7 +67,7 @@ namespace PlayIt_Api.Services.ServerMediatorMaster.handler
             }
 
             //If validation failed or account does not exists only send sessionKey back
-            ctx.Channel.WriteAndFlushAsync(new PlayerData(msg.SessionKey, 0, ""));
+           await ctx.Channel.WriteAndFlushAsync(new PlayerData(msg.SessionKey, 0, ""));
         }
     }
 }

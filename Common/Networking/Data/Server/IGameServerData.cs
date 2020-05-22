@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿﻿﻿using System;
 using Common.Networking.Handlers;
 
 namespace Common.Networking.Data.Server
@@ -7,7 +7,7 @@ namespace Common.Networking.Data.Server
     /// Interface for grouping server data needed to indentify individual servers
     /// PacketId = 1
     /// </summary>
-    public interface IGameServerData : IMagicNumber
+    public interface IGameServerData : IPacketId
     {
         /// <summary>
         /// The guid of the server

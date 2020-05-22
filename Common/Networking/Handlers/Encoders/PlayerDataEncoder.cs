@@ -1,4 +1,5 @@
-﻿﻿using Common.Networking.Data.Player;
+﻿﻿﻿using System;
+using Common.Networking.Data.Player;
 using DotNetty.Buffers;
 using DotNetty.Codecs;
 using DotNetty.Transport.Channels;
@@ -16,7 +17,7 @@ namespace Common.Networking.Handlers.Encoders
             output.Add(
                 ByteBufferUtil.EncodeString(
                     context.Allocator,
-                    $"{message.PacketId}:{message.SessionKey}:{message.PlayerID}:{message.Username}",
+                    $"{message.PacketId}{Environment.NewLine}{message.SessionKey}:{message.PlayerID}:{message.Username}",
                     System.Text.Encoding.UTF8));
         }
     }

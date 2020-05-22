@@ -1,11 +1,11 @@
-﻿﻿using Common.Networking.Handlers;
+﻿﻿﻿using Common.Networking.Handlers;
 
 namespace Common.Networking.Data.Player
 {
     /// <summary>
     /// Mapping class to map a single player to all the rooms they're currently part of
     /// </summary>
-    public interface IPlayerRoomData : IMagicNumber
+    public interface IPlayerRoomData : IPacketId
     {
         /// <summary>
         /// The ID of the player

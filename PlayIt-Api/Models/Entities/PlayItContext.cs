@@ -1,6 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace PlayIt_Api.Models.Entities
 {
@@ -21,15 +19,6 @@ namespace PlayIt_Api.Models.Entities
         public virtual DbSet<LoginAttempt> LoginAttempt { get; set; }
         public virtual DbSet<Token> Token { get; set; }
         public virtual DbSet<TokenType> TokenType { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("server=PIETRAS.DK\\PIETRASSQL,52384;database=PlayIt;user=PlayIt;pwd=pVG553c@Yia7Ft7u3D*mvGi*ay!z5LLi");
-            }
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

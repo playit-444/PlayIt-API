@@ -2,6 +2,7 @@
 using System.Data.Common;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using PlayIt_Api.Logging;
 using PlayIt_Api.Models.Dto;
 using PlayIt_Api.Models.Entities;
+using PlayIt_Api.Models.GameServer;
 using PlayIt_Api.Services.Mail;
 using PlayIt_Api.Services.Security.Account;
 using PlayIt_Api.Services.Token;
@@ -123,7 +125,7 @@ namespace PlayIt_Api.Services.Account
         /// </summary>
         /// <param name="accountSignIn"></param>
         /// <returns></returns>
-        public async Task<JwtToken> LoginAccount(AccountSignIn accountSignIn)
+        public async Task<AccountJwtToken> LoginAccount(AccountSignIn accountSignIn)
         {
             var accountRepo = _unitOfWork.GetRepository<Models.Entities.Account>();
 
@@ -163,9 +165,15 @@ namespace PlayIt_Api.Services.Account
         /// </summary>
         /// <param name="account"></param>
         /// <returns></returns>
-        private JwtToken CreateJwtToken(Models.Entities.Account account)
+        private AccountJwtToken CreateJwtToken(Models.Entities.Account account)
         {
-            var expire = DateTime.Now.AddHours(8);
+            var role = "customer";
+            if (account.AccountId == 30)
+            {
+                role = "gameServer";
+            }
+
+            var expire = DateTime.Now.AddDays(1);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
@@ -173,7 +181,8 @@ namespace PlayIt_Api.Services.Account
                     new Claim("AccountId", account.AccountId.ToString()),
                     new Claim("Username", account.UserName),
                     new Claim("Email", account.Email),
-                    new Claim("Expires", expire.ToString(CultureInfo.InvariantCulture))
+                    new Claim("Expires", expire.ToString(CultureInfo.InvariantCulture)),
+                    new Claim(ClaimTypes.Role, role)
                 }),
                 Expires = expire,
                 SigningCredentials = new SigningCredentials(
@@ -184,7 +193,7 @@ namespace PlayIt_Api.Services.Account
             var tokenHandler = new JwtSecurityTokenHandler();
             var securityToken = tokenHandler.CreateToken(tokenDescriptor);
             var token = tokenHandler.WriteToken(securityToken);
-            return new JwtToken {Token = token};
+            return new AccountJwtToken(token);
         }
 
         /// <summary>
@@ -213,7 +222,7 @@ namespace PlayIt_Api.Services.Account
         }
 
         /// <summary>
-        /// VerifyAccount
+        /// VerifyAccount with token from email
         /// </summary>
         /// <param name="tokenId"></param>
         /// <returns></returns>
@@ -235,11 +244,65 @@ namespace PlayIt_Api.Services.Account
         /// </summary>
         /// <param name="employeeId"></param>
         /// <returns></returns>
-        public async Task<JwtToken> RenewLoginToken(int employeeId)
+        public async Task<AccountJwtToken> RenewLoginToken(int employeeId)
         {
             var accountRepo = _unitOfWork.GetRepository<Models.Entities.Account>();
             var account = await accountRepo.GetFirstOrDefaultAsync(predicate: a => a.AccountId == employeeId);
             return CreateJwtToken(account);
+        }
+
+        public async Task<PlayerVerificationResponse> VerifyToken(string jwtToken)
+        {
+            JwtSecurityTokenHandler jwtSecurityTokenHandler;
+            jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+
+            TokenValidationParameters validationParameters = new TokenValidationParameters()
+            {
+                ValidateLifetime = false,
+                ValidateAudience = false,
+                ValidateIssuer = false,
+                IssuerSigningKey =
+                    new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes("YdCnz8X4!dvLvtu8c&q*9JSd$BZD#^P5Wrb^PsvvJm5XfxbHW3X@8YD8D4^pe8nx"))
+            };
+
+
+            SecurityToken validatedToken;
+            try
+            {
+                //Validate token if not valid it throws a error
+                jwtSecurityTokenHandler.ValidateToken(jwtToken, validationParameters, out validatedToken);
+
+                //Handler for getting token values
+                var handler = new JwtSecurityTokenHandler();
+                //Get token's values in claims
+                var tokenS = handler.ReadToken(jwtToken) as JwtSecurityToken;
+
+                //Get specific value from claim
+                var accountId = tokenS.Claims.First(claim => claim.Type == "AccountId").Value;
+
+                //Account repository
+                var accountRepo = _unitOfWork.GetRepository<Models.Entities.Account>();
+                //Account information
+                var account =
+                    await accountRepo.GetFirstOrDefaultAsync(predicate: e => e.AccountId == Convert.ToInt32(accountId));
+                if (account != null)
+                {
+                    return new PlayerVerificationResponse(jwtToken, account.AccountId, account.UserName);
+                }
+            }
+            catch (Exception)
+            {
+                //Logger
+            }
+
+            return new PlayerVerificationResponse(jwtToken, 0, "");
+        }
+
+        public Task<Models.Entities.Account> GetAccount(long accountId)
+        {
+            var accountRepo = _unitOfWork.GetRepository<Models.Entities.Account>();
+            return accountRepo.GetFirstOrDefaultAsync(predicate: a => a.AccountId == accountId);
         }
 
         public void Dispose()

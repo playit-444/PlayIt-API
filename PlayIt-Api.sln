@@ -2,8 +2,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayIt-Api", "PlayIt-Api\PlayIt-Api.csproj", "{EC14A765-FC43-4BE0-945C-1E7F3FDC0CB6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{747E369B-A038-4BC2-9880-D70551A42A36}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -14,9 +12,5 @@ Global
 		{EC14A765-FC43-4BE0-945C-1E7F3FDC0CB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC14A765-FC43-4BE0-945C-1E7F3FDC0CB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC14A765-FC43-4BE0-945C-1E7F3FDC0CB6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{747E369B-A038-4BC2-9880-D70551A42A36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{747E369B-A038-4BC2-9880-D70551A42A36}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{747E369B-A038-4BC2-9880-D70551A42A36}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{747E369B-A038-4BC2-9880-D70551A42A36}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

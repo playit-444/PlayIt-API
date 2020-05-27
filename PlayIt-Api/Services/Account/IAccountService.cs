@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using PlayIt_Api.Models.Dto;
+using PlayIt_Api.Models.GameServer;
 
 namespace PlayIt_Api.Services.Account
 {
@@ -33,7 +34,7 @@ namespace PlayIt_Api.Services.Account
         /// </summary>
         /// <param name="accountSignIn"></param>
         /// <returns></returns>
-        Task<JwtToken> LoginAccount(AccountSignIn accountSignIn);
+        Task<AccountJwtToken> LoginAccount(AccountSignIn accountSignIn);
 
         /// <summary>
         /// Verify Account
@@ -47,6 +48,15 @@ namespace PlayIt_Api.Services.Account
         /// </summary>
         /// <param name="employeeId"></param>
         /// <returns></returns>
-        Task<JwtToken> RenewLoginToken(int employeeId);
+        Task<AccountJwtToken> RenewLoginToken(int employeeId);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="jwtToken"></param>
+        /// <returns></returns>
+        Task<PlayerVerificationResponse> VerifyToken(string jwtToken);
+
+        Task<Models.Entities.Account> GetAccount(long accountId);
     }
 }

@@ -9421,7 +9421,6 @@
       "AutoMapper.Extensions.Microsoft.DependencyInjection >= 7.0.0",
       "BouncyCastle.NetCore >= 1.8.6",
       "Common >= 1.0.0",
-      "DotNetty.Transport >= 0.6.0",
       "Microsoft.AspNetCore.Authentication.JwtBearer >= 3.1.4",
       "Microsoft.AspNetCore.Mvc.NewtonsoftJson >= 3.1.4",
       "Microsoft.EntityFrameworkCore >= 3.1.4",
@@ -9488,10 +9487,6 @@
             "target": "Package",
             "version": "[1.8.6, )"
           },
-          "DotNetty.Transport": {
-            "target": "Package",
-            "version": "[0.6.0, )"
-          },
           "Microsoft.AspNetCore.Authentication.JwtBearer": {
             "target": "Package",
             "version": "[3.1.4, )"
@@ -9535,6 +9530,12 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[3.1.2, 3.1.2]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.AspNetCore.App": {
             "privateAssets": "none"
@@ -9543,7 +9544,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.202\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.300\\RuntimeIdentifierGraph.json"
       }
     }
   }

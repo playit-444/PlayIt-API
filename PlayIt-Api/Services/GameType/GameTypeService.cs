@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Arch.EntityFrameworkCore.UnitOfWork;
 using Arch.EntityFrameworkCore.UnitOfWork.Collections;
 using Microsoft.AspNetCore.Mvc;
 using PlayIt_Api.Logging;
+using PlayIt_Api.Models.GameServer;
 
 namespace PlayIt_Api.Services.GameType
 {
@@ -26,6 +28,19 @@ namespace PlayIt_Api.Services.GameType
         {
             var gameRepo = _unitOfWork.GetRepository<Models.Entities.GameType>();
             return await gameRepo.GetPagedListAsync();
+        }
+
+        public async Task<ICollection<GameTypeSimple>> GetGameTypesSimple()
+        {
+            var gameTypes = await GetGameTypes();
+            var gameTypeSimples = new List<GameTypeSimple>();
+            foreach (var gameType in gameTypes.Items)
+            {
+                gameTypeSimples.Add(new GameTypeSimple(gameType.GameTypeId, gameType.Name, gameType.MaxPlayers,
+                    gameType.MinimumPlayers));
+            }
+
+            return gameTypeSimples;
         }
 
         public async Task<Models.Entities.GameType> GetGameType(int gameTypeId)

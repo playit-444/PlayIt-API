@@ -1,10 +1,11 @@
 using System;
 using System.Text;
 using Arch.EntityFrameworkCore.UnitOfWork;
-using Common.Networking.Mediation.Master;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,7 +21,6 @@ using PlayIt_Api.Services.GameType;
 using PlayIt_Api.Services.Mail;
 using PlayIt_Api.Services.Security;
 using PlayIt_Api.Services.Security.Account;
-using PlayIt_Api.Services.ServerMediatorMaster;
 using PlayIt_Api.Services.Token;
 
 namespace PlayIt_Api
@@ -50,11 +50,6 @@ namespace PlayIt_Api
             services.AddScoped<ILogger, DbExceptionLogger>();
             services.AddScoped<IGameTypeService, GameTypeService>();
             services.AddScoped<IGameService, GameService>();
-            services.AddSingleton<IGameServerMediatorMaster, ServerMediatorMaster>();
-
-            //Instance server
-            new ServerMediatorMaster();
-
 
             services.AddScoped<IPasswordService, PasswordService>(
                 service => new PasswordService(
@@ -62,6 +57,11 @@ namespace PlayIt_Api
                     8,
                     32));
 
+            //Access header
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            //Add automapper used to convert db models to dto
+            services.AddAutoMapper(typeof(Startup));
 
             //JSON loop
             services.AddControllers()
@@ -78,7 +78,7 @@ namespace PlayIt_Api
             //Swagger
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Play It Api", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo {Title = "Play It Api", Version = "v1"});
             });
 
             services.AddControllers();

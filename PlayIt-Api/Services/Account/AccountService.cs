@@ -304,6 +304,42 @@ namespace PlayIt_Api.Services.Account
             var accountRepo = _unitOfWork.GetRepository<Models.Entities.Account>();
             return accountRepo.GetFirstOrDefaultAsync(predicate: a => a.AccountId == accountId);
         }
+        
+        public Task<Models.Entities.Account> GetAccountFromToken(string token)
+        {
+            //var tokenRepo = _unitOfWork.GetRepository<Models.Entities.Token>();
+            //var accountRepo = _unitOfWork.GetRepository<Models.Entities.Account>();
+            
+            
+            try
+            {
+                //Handler for getting token values
+                var handler = new JwtSecurityTokenHandler();
+                //Get token's values in claims
+
+                //Get specific value from claim
+                if (handler.ReadToken(token) is JwtSecurityToken tokenS)
+                {
+                    var accountId = tokenS.Claims.First(claim => claim.Type == "AccountId").Value;
+
+                    //Account repository
+                    var accountRepo = _unitOfWork.GetRepository<Models.Entities.Account>();
+                    //Account information
+                    var account =
+                        accountRepo.GetFirstOrDefaultAsync(predicate: e => e.AccountId == Convert.ToInt32(accountId));
+                    if (account != null)
+                    {
+                        return account;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                //Logger
+            }
+
+            return null;
+        }
 
         public void Dispose()
         {

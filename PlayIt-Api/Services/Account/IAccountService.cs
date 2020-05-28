@@ -58,5 +58,7 @@ namespace PlayIt_Api.Services.Account
         Task<PlayerVerificationResponse> VerifyToken(string jwtToken);
 
         Task<Models.Entities.Account> GetAccount(long accountId);
+        
+        Task<Models.Entities.Account> GetAccountFromToken(string token);
     }
 }

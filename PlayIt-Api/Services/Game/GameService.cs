@@ -47,7 +47,8 @@ namespace PlayIt_Api.Services.Game
                     _roomDatas[serverId] = new List<IRoomData> {roomData};
                 }
 
-                _roomDatas[serverId].Add(roomData);
+                if (!_roomDatas[serverId].Contains(roomData))
+                    _roomDatas[serverId].Add(roomData);
             }
         }
 

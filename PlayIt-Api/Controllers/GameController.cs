@@ -13,7 +13,7 @@ namespace PlayIt_Api.Controllers
     /// <summary>
     /// Controller responsible for CRUD Account
     /// </summary>
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class GameController : ControllerBase
@@ -154,7 +154,7 @@ namespace PlayIt_Api.Controllers
         [ProducesResponseType(typeof(IList<RoomData>), (int) HttpStatusCode.OK)]
         [ProducesResponseType(typeof(Response), (int) HttpStatusCode.NotFound)]
         [ProducesResponseType((int) HttpStatusCode.BadRequest)]
-        public IActionResult Get(int gameTypeId)
+        public IActionResult GetGameType(int gameTypeId)
         {
             if (gameTypeId == 0)
                 return BadRequest("GameType blev ikke fundet");

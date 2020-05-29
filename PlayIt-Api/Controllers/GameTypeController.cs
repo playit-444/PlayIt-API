@@ -19,11 +19,11 @@ namespace PlayIt_Api.Controllers
     [ApiController]
     public class GameTypeController : ControllerBase
     {
-        private readonly IGameTypeService _gameInformationService;
+        private readonly IGameTypeService _gameTypeService;
 
-        public GameTypeController([FromServices] IGameTypeService gameInformationService)
+        public GameTypeController([FromServices] IGameTypeService gameTypeService)
         {
-            _gameInformationService = gameInformationService;
+            _gameTypeService = gameTypeService;
         }
 
         /// <summary>
@@ -34,11 +34,11 @@ namespace PlayIt_Api.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(IPagedList<GameType>), (int) HttpStatusCode.OK)]
         [ProducesResponseType((int) HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetGameTypes()
         {
             try
             {
-                var gameTypes = await _gameInformationService.GetGameTypes();
+                var gameTypes = await _gameTypeService.GetGameTypes();
                 if (gameTypes != null)
                 {
                     return Ok(gameTypes);
@@ -60,11 +60,11 @@ namespace PlayIt_Api.Controllers
         [HttpGet("Simple")]
         [ProducesResponseType(typeof(ICollection<GameTypeSimple>), (int) HttpStatusCode.OK)]
         [ProducesResponseType((int) HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> GetSimple()
+        public async Task<IActionResult> GetGameTypeSimple()
         {
             try
             {
-                var gameTypeSimples = await _gameInformationService.GetGameTypesSimple();
+                var gameTypeSimples = await _gameTypeService.GetGameTypesSimple();
                 if (gameTypeSimples != null)
                 {
                     return Ok(gameTypeSimples);
@@ -86,14 +86,14 @@ namespace PlayIt_Api.Controllers
         [HttpGet("{gameTypeId}")]
         [ProducesResponseType(typeof(GameType), (int) HttpStatusCode.OK)]
         [ProducesResponseType((int) HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> GetType(int gameTypeId)
+        public async Task<IActionResult> GetGameType(int gameTypeId)
         {
             if (gameTypeId == 0)
                 return BadRequest("GameTypeId blev ikke fundet");
 
             try
             {
-                var gameTypes = await _gameInformationService.GetGameType(gameTypeId);
+                var gameTypes = await _gameTypeService.GetGameType(gameTypeId);
                 if (gameTypes != null)
                 {
                     return Ok(gameTypes);

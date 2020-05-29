@@ -51,14 +51,24 @@ namespace PlayIt_Api.Services.Account
         Task<AccountJwtToken> RenewLoginToken(int employeeId);
 
         /// <summary>
-        ///
+        /// Verify if token is valid
         /// </summary>
         /// <param name="jwtToken"></param>
         /// <returns></returns>
         Task<PlayerVerificationResponse> VerifyToken(string jwtToken);
 
+        /// <summary>
+        /// Get Account from
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <returns></returns>
         Task<Models.Entities.Account> GetAccount(long accountId);
-        
+
+        /// <summary>
+        /// Get account information from token
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
         Task<Models.Entities.Account> GetAccountFromToken(string token);
     }
 }

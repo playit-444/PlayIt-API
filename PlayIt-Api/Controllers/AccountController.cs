@@ -106,11 +106,11 @@ namespace PlayIt_Api.Controllers
                 return BadRequest("Email/Brugernavn eller password er forkert");
             return Ok(_mapper.Map<Account, Models.Dto.Account>(await _accountService.GetAccount(accountId)));
         }
-        
+
         /// <summary>
-        ///
+        /// 
         /// </summary>
-        /// <param name="session-token"></param>
+        /// <param name="token"></param>
         /// <returns></returns>
         [HttpGet("token/{token}")]
         [ProducesResponseType(typeof(Models.Dto.Account), (int) HttpStatusCode.OK)]

@@ -2,6 +2,7 @@
 using System.Data.Common;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
@@ -58,6 +59,13 @@ namespace PlayIt_Api.Services.Account
                 salt = new byte[32];
 
             EntityEntry<Models.Entities.Account> account = null;
+
+            string avatarPath = string.Empty;
+            if (!string.IsNullOrEmpty(accountSignUp.Avatar))
+            {
+                avatarPath = SaveAvatar(accountSignUp.Avatar, accountSignUp.UserName);
+            }
+            
             try
             {
                 password = _passwordService.CreatePassword(accountSignUp.Password, out salt);
@@ -67,7 +75,7 @@ namespace PlayIt_Api.Services.Account
                 account = await accountRepo.InsertAsync(new Models.Entities.Account
                 {
                     Created = DateTime.Now, Email = accountSignUp.Email, Password = password, Salt = salt,
-                    Verified = false, UserName = accountSignUp.UserName, AvatarFilePath = ""
+                    Verified = false, UserName = accountSignUp.UserName, AvatarFilePath = avatarPath
                 });
                 await _unitOfWork.SaveChangesAsync();
 
@@ -79,6 +87,7 @@ namespace PlayIt_Api.Services.Account
                     _mailService.SendMail("444.dk - Godkendelse af bruger oprettelse",
                         "<a href = \"https://444.dk?token=" + token.Entity.TokenId + "\">Godkend</a>",
                         account.Entity.Email);
+                    
                 }
             }
             catch (ArgumentNullException e)
@@ -95,6 +104,40 @@ namespace PlayIt_Api.Services.Account
             }
 
             return account;
+        }
+
+        /// <summary>
+        /// Creates a folder and 
+        /// </summary>
+        /// <param name="avatar"></param>
+        /// <param name="username"></param>
+        /// <returns>Account Avatar Path</returns>
+        private string SaveAvatar(string avatar, string username)
+        {
+            try
+            {
+                // Splits the string to get the image format
+                string format = avatar.Split("/")[1].Split(';')[0];
+            
+                string path = $@"C:\inetpub\wwwroot\image.444.dk\players\{username}";
+            
+                // Splits the string to get the only the image without the headers
+                var bytes = Convert.FromBase64String(avatar.Split(',')[1]);
+
+                // Creates a new directory if it doesn't exist.
+                Directory.CreateDirectory(path);
+                
+                // Saves the image in the newly creates folder.
+                File.WriteAllBytes(Path.Combine(path, $"Avatar.{format}"), bytes);
+                
+                // Returns the url path to the image.
+                return $"https://image.444.dk/players/{username}/Avatar.{format}";
+            }
+            catch (Exception e)
+            {
+                _logger.Log(e.ToString());
+                throw;
+            }
         }
 
         /// <summary>

@@ -7,10 +7,6 @@ C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-Api\PlayIt-Api\bin\Debug
 C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-Api\PlayIt-Api\bin\Debug\netcoreapp3.1\PlayIt-Api.runtimeconfig.dev.json
 C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-Api\PlayIt-Api\bin\Debug\netcoreapp3.1\PlayIt-Api.dll
 C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-Api\PlayIt-Api\bin\Debug\netcoreapp3.1\PlayIt-Api.pdb
-C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-Api\PlayIt-Api\bin\Debug\netcoreapp3.1\DotNetty.Buffers.dll
-C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-Api\PlayIt-Api\bin\Debug\netcoreapp3.1\DotNetty.Codecs.dll
-C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-Api\PlayIt-Api\bin\Debug\netcoreapp3.1\DotNetty.Common.dll
-C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-Api\PlayIt-Api\bin\Debug\netcoreapp3.1\DotNetty.Transport.dll
 C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-Api\PlayIt-Api\obj\Debug\netcoreapp3.1\PlayIt-Api.csprojAssemblyReference.cache
 C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-Api\PlayIt-Api\obj\Debug\netcoreapp3.1\PlayIt-Api.csproj.CoreCompileInputs.cache
 C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-Api\PlayIt-Api\obj\Debug\netcoreapp3.1\PlayIt-Api.MvcApplicationPartsAssemblyInfo.cache

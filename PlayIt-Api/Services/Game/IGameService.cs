@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using PlayIt_Api.Models.Dto;
 using PlayIt_Api.Models.GameServer;
 
 namespace PlayIt_Api.Services.Game
@@ -11,6 +12,7 @@ namespace PlayIt_Api.Services.Game
         /// </summary>
         /// <returns></returns>
         IList<IRoomData> GetGameByType(int gameType);
+        IList<GamePlayerCount> GetGamePlayerCountByGameType();
 
         void AddRoomData(string serverId, IRoomData roomData);
         bool RemoveRoomData(string serverId, string roomId);

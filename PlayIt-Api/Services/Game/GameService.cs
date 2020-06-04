@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using PlayIt_Api.Logging;
+using PlayIt_Api.Models.Dto;
 using PlayIt_Api.Models.GameServer;
 
 namespace PlayIt_Api.Services.Game
@@ -32,6 +33,32 @@ namespace PlayIt_Api.Services.Game
                 foreach (var roomData in _roomDatas)
                 {
                     games.AddRange(roomData.Value.Where(a => a.GameType == gameType));
+                }
+            }
+
+            return games;
+        }
+
+        public IList<GamePlayerCount> GetGamePlayerCountByGameType()
+        {
+            var games = new List<GamePlayerCount>();
+
+            lock (_roomDatas)
+            {
+                foreach (var roomData in _roomDatas)
+                {
+                    foreach (var room in roomData.Value)
+                    {
+                        var gamePlayerCount = games.SingleOrDefault(a => a.GameTypeId == room.GameType);
+                        if (gamePlayerCount == null)
+                        {
+                            games.Add(new GamePlayerCount(room.GameType, room.CurrentUsers));
+                        }
+                        else
+                        {
+                            gamePlayerCount.Amount += room.CurrentUsers;
+                        }
+                    }
                 }
             }
 

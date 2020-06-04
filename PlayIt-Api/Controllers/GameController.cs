@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PlayIt_Api.Models.Dto;
@@ -13,7 +13,7 @@ namespace PlayIt_Api.Controllers
     /// <summary>
     /// Controller responsible for CRUD Account
     /// </summary>
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class GameController : ControllerBase
@@ -168,6 +168,27 @@ namespace PlayIt_Api.Controllers
                 }
 
                 return NotFound(new Response("Der findes ingen lobbys"));
+            }
+            catch (Exception)
+            {
+                return BadRequest("an error occured whilst trying to get all games");
+            }
+        }
+
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("CountPlayers")]
+        [ProducesResponseType(typeof(IList<GamePlayerCount>), (int) HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(Response), (int) HttpStatusCode.NotFound)]
+        [ProducesResponseType((int) HttpStatusCode.BadRequest)]
+        public IActionResult GetCountGameType()
+        {
+            try
+            {
+                return Ok(_gameService.GetGamePlayerCountByGameType());
             }
             catch (Exception)
             {

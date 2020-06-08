@@ -54,18 +54,22 @@ namespace PlayIt_Api.Services.Account
             if (accountSignUp == null)
                 throw new ArgumentNullException(nameof(accountSignUp));
 
+            if (string.IsNullOrEmpty(accountSignUp.UserName))
+                throw new ArgumentNullException(accountSignUp.UserName);
+
+            if (string.IsNullOrEmpty(accountSignUp.Email))
+                throw new ArgumentNullException(accountSignUp.Email);
+
+            if (string.IsNullOrEmpty(accountSignUp.Password))
+                throw new ArgumentNullException(accountSignUp.Password);
+
             //Create a new password for the customer
             byte[] password = new byte[64],
                 salt = new byte[32];
 
             EntityEntry<Models.Entities.Account> account = null;
+            string avatarPath = SaveAvatar(accountSignUp.Avatar, accountSignUp.UserName);
 
-            string avatarPath = string.Empty;
-            if (!string.IsNullOrEmpty(accountSignUp.Avatar))
-            {
-                avatarPath = SaveAvatar(accountSignUp.Avatar, accountSignUp.UserName);
-            }
-            
             try
             {
                 password = _passwordService.CreatePassword(accountSignUp.Password, out salt);
@@ -85,30 +89,33 @@ namespace PlayIt_Api.Services.Account
                     //Create Token
                     var token = await _tokenService.CreateToken(account.Entity.AccountId, 1);
                     _mailService.SendMail("444.dk - Godkendelse af bruger oprettelse",
-                        //"<a href = \"https://444.dk?token=" + token.Entity.TokenId + "\">Godkend</a>",
-                        "<!DOCTYPE html><html>    <head>        <style>            .logo {                text-align: center;            }            .main {                text-align: center;            }            .footer {                text-align: center;            }            .btn {                display: inline-block;                font-weight: 400;                color: #212529;                text-align: center;                vertical-align: middle;                -webkit-user-select: none;                -moz-user-select: none;                -ms-user-select: none;                user-select: none;                background-color: transparent;                border: 1px solid transparent;                padding: .375rem .75rem;                font-size: 1rem;                line-height: 1.5;                border-radius: .25rem;                transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;            }            .btn-success {                color: #fff;                background-color: #28a745;                border-color: #28a745;            }            .footer span {                color: #777;            }        </style>    </head>    <body>        <div class=\"container\">            <div class=\"logo\">                <img src=\"https://image.444.dk/logo/logo-without-banner.png\" alt=\"444.dk Logo\" width=\"180\" height=\"140\">            </div>            <br>            <div class=\"main\">                <span>Tryk på godkend herunder for at verificere din email</span><br>                <a class=\"btn btn-success\" href=\"https://444.dk?token=" + token.Entity.TokenId + "\">Godkend</a>            </div>            <br>            <div class=\"footer\">                <span>Har du ikke oprettet dig på 444.dk?</span><br>                <span>Venligst ignorer denne mail.</span>            </div>        </div>    </body></html>",
+                        "<!DOCTYPE html><html>    <head>        <style>            .logo {                text-align: center;            }            .main {                text-align: center;            }            .footer {                text-align: center;            }            .btn {                display: inline-block;                font-weight: 400;                color: #212529;                text-align: center;                vertical-align: middle;                -webkit-user-select: none;                -moz-user-select: none;                -ms-user-select: none;                user-select: none;                background-color: transparent;                border: 1px solid transparent;                padding: .375rem .75rem;                font-size: 1rem;                line-height: 1.5;                border-radius: .25rem;                transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;            }            .btn-success {                color: #fff;                background-color: #28a745;                border-color: #28a745;            }            .footer span {                color: #777;            }        </style>    </head>    <body>        <div class=\"container\">            <div class=\"logo\">                <img src=\"https://image.444.dk/logo/logo-without-banner.png\" alt=\"444.dk Logo\" width=\"180\" height=\"140\">            </div>            <br>            <div class=\"main\">                <span>Tryk på godkend herunder for at verificere din email</span><br>                <a class=\"btn btn-success\" href=\"https://444.dk?token=" +
+                        token.Entity.TokenId +
+                        "\">Godkend</a>            </div>            <br>            <div class=\"footer\">                <span>Har du ikke oprettet dig på 444.dk?</span><br>                <span>Venligst ignorer denne mail.</span>            </div>        </div>    </body></html>",
                         account.Entity.Email);
-                    
                 }
             }
             catch (ArgumentNullException e)
             {
                 await _logger.LogAsync(e.Message);
+                throw;
             }
             catch (DbException e)
             {
                 await _logger.LogAsync(e.Message);
+                throw;
             }
             catch (Exception e)
             {
                 await _logger.LogAsync(e.Message);
+                throw;
             }
 
             return account;
         }
 
         /// <summary>
-        /// Creates a folder and 
+        /// Creates a folder and
         /// </summary>
         /// <param name="avatar"></param>
         /// <param name="username"></param>
@@ -119,25 +126,25 @@ namespace PlayIt_Api.Services.Account
             {
                 // Splits the string to get the image format
                 string format = avatar.Split("/")[1].Split(';')[0];
-            
+
                 string path = $@"C:\inetpub\wwwroot\image.444.dk\players\{username}";
-            
+
                 // Splits the string to get the only the image without the headers
                 var bytes = Convert.FromBase64String(avatar.Split(',')[1]);
 
                 // Creates a new directory if it doesn't exist.
                 Directory.CreateDirectory(path);
-                
+
                 // Saves the image in the newly creates folder.
                 File.WriteAllBytes(Path.Combine(path, $"Avatar.{format}"), bytes);
-                
+
                 // Returns the url path to the image.
                 return $"https://image.444.dk/players/{username}/Avatar.{format}";
             }
             catch (Exception e)
             {
                 _logger.Log(e.ToString());
-                throw;
+                return $"https://image.444.dk/players/no-image/no-user-image.png";
             }
         }
 
@@ -348,13 +355,9 @@ namespace PlayIt_Api.Services.Account
             var accountRepo = _unitOfWork.GetRepository<Models.Entities.Account>();
             return accountRepo.GetFirstOrDefaultAsync(predicate: a => a.AccountId == accountId);
         }
-        
+
         public Task<Models.Entities.Account> GetAccountFromToken(string token)
         {
-            //var tokenRepo = _unitOfWork.GetRepository<Models.Entities.Token>();
-            //var accountRepo = _unitOfWork.GetRepository<Models.Entities.Account>();
-            
-            
             try
             {
                 //Handler for getting token values

@@ -511,6 +511,18 @@
           "build/netcoreapp2.0/_._": {}
         }
       },
+      "Microsoft.EntityFrameworkCore.InMemory/3.1.4": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore": "3.1.4"
+        },
+        "compile": {
+          "lib/netstandard2.0/Microsoft.EntityFrameworkCore.InMemory.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.EntityFrameworkCore.InMemory.dll": {}
+        }
+      },
       "Microsoft.EntityFrameworkCore.Relational/3.1.4": {
         "type": "package",
         "dependencies": {
@@ -3302,6 +3314,7 @@
           "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "3.1.4",
           "Microsoft.EntityFrameworkCore": "3.1.4",
           "Microsoft.EntityFrameworkCore.Design": "3.1.4",
+          "Microsoft.EntityFrameworkCore.InMemory": "3.1.4",
           "Microsoft.EntityFrameworkCore.SqlServer": "3.1.4",
           "Microsoft.EntityFrameworkCore.UnitOfWork": "3.1.0",
           "Microsoft.VisualStudio.Web.CodeGeneration.Design": "3.1.3",
@@ -3969,6 +3982,20 @@
         "lib/netstandard2.0/Microsoft.EntityFrameworkCore.Design.xml",
         "microsoft.entityframeworkcore.design.3.1.4.nupkg.sha512",
         "microsoft.entityframeworkcore.design.nuspec"
+      ]
+    },
+    "Microsoft.EntityFrameworkCore.InMemory/3.1.4": {
+      "sha512": "HoOvn+DANGv6g/O4KUuKUoEvu3arpw5utDuWyFOBxnbluAbVU/cfoSvEVVBsZ+/C4L7WWEqBwItUmlf35vZKCQ==",
+      "type": "package",
+      "path": "microsoft.entityframeworkcore.inmemory/3.1.4",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "lib/netstandard2.0/Microsoft.EntityFrameworkCore.InMemory.dll",
+        "lib/netstandard2.0/Microsoft.EntityFrameworkCore.InMemory.xml",
+        "microsoft.entityframeworkcore.inmemory.3.1.4.nupkg.sha512",
+        "microsoft.entityframeworkcore.inmemory.nuspec"
       ]
     },
     "Microsoft.EntityFrameworkCore.Relational/3.1.4": {
@@ -10269,6 +10296,7 @@
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v3.1": [
+      "Microsoft.EntityFrameworkCore.InMemory >= 3.1.4",
       "Microsoft.NET.Test.Sdk >= 16.2.0",
       "PlayIt-Api >= 1.0.0",
       "coverlet.collector >= 1.2.0",
@@ -10277,20 +10305,27 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Peter\\.nuget\\packages\\": {}
+    "C:\\Users\\Christoffer\\.nuget\\packages\\": {},
+    "C:\\Microsoft\\Xamarin\\NuGet": {},
+    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Peter\\source\\playit\\PlayIt-Api\\PlayIt-Api_TESTS\\PlayIt-Api_TESTS.csproj",
+      "projectUniqueName": "C:\\Users\\Christoffer\\RiderProjects\\RiderProjects\\PlayIt-Api\\PlayIt-Api_TESTS\\PlayIt-Api_TESTS.csproj",
       "projectName": "PlayIt-Api_TESTS",
-      "projectPath": "C:\\Users\\Peter\\source\\playit\\PlayIt-Api\\PlayIt-Api_TESTS\\PlayIt-Api_TESTS.csproj",
-      "packagesPath": "C:\\Users\\Peter\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Peter\\source\\playit\\PlayIt-Api\\PlayIt-Api_TESTS\\obj\\",
+      "projectPath": "C:\\Users\\Christoffer\\RiderProjects\\RiderProjects\\PlayIt-Api\\PlayIt-Api_TESTS\\PlayIt-Api_TESTS.csproj",
+      "packagesPath": "C:\\Users\\Christoffer\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Christoffer\\RiderProjects\\RiderProjects\\PlayIt-Api\\PlayIt-Api_TESTS\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Microsoft\\Xamarin\\NuGet",
+        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+      ],
       "configFilePaths": [
-        "C:\\Users\\Peter\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\Christoffer\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp3.1"
@@ -10302,8 +10337,8 @@
       "frameworks": {
         "netcoreapp3.1": {
           "projectReferences": {
-            "C:\\Users\\Peter\\source\\playit\\PlayIt-Api\\PlayIt-Api\\PlayIt-Api.csproj": {
-              "projectPath": "C:\\Users\\Peter\\source\\playit\\PlayIt-Api\\PlayIt-Api\\PlayIt-Api.csproj"
+            "C:\\Users\\Christoffer\\RiderProjects\\RiderProjects\\PlayIt-Api\\PlayIt-Api\\PlayIt-Api.csproj": {
+              "projectPath": "C:\\Users\\Christoffer\\RiderProjects\\RiderProjects\\PlayIt-Api\\PlayIt-Api\\PlayIt-Api.csproj"
             }
           }
         }
@@ -10317,6 +10352,10 @@
     "frameworks": {
       "netcoreapp3.1": {
         "dependencies": {
+          "Microsoft.EntityFrameworkCore.InMemory": {
+            "target": "Package",
+            "version": "[3.1.4, )"
+          },
           "Microsoft.NET.Test.Sdk": {
             "target": "Package",
             "version": "[16.2.0, )"
@@ -10344,6 +10383,12 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[3.1.2, 3.1.2]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.AspNetCore.App": {
             "privateAssets": "none"
@@ -10352,7 +10397,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.200\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.300\\RuntimeIdentifierGraph.json"
       }
     }
   }

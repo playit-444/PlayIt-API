@@ -34,10 +34,11 @@ namespace PlayIt_Api.Controllers
         }
 
         /// <summary>
-        /// Create a Account
+        /// Create an unverified Account
+        /// Send email with verification link to user
         /// </summary>
         /// <param name="accountSignUp"></param>
-        /// <returns></returns>
+        /// <returns>Created user</returns>
         [AllowAnonymous]
         [HttpPost]
         [ProducesResponseType(typeof(Response), (int) HttpStatusCode.OK)]
@@ -93,32 +94,36 @@ namespace PlayIt_Api.Controllers
         }
 
         /// <summary>
-        ///
+        /// Return an specific account
         /// </summary>
         /// <param name="accountId"></param>
-        /// <returns></returns>
+        /// <returns>Account</returns>
         [HttpGet("{accountId}")]
         [ProducesResponseType(typeof(Models.Dto.Account), (int) HttpStatusCode.OK)]
         [ProducesResponseType((int) HttpStatusCode.BadRequest)]
         public async Task<IActionResult> GetAccount(long accountId)
         {
+            //Check if accountId is not 0
             if (accountId == 0)
                 return BadRequest("Email/Brugernavn eller password er forkert");
+            //Return account
             return Ok(_mapper.Map<Account, Models.Dto.Account>(await _accountService.GetAccount(accountId)));
         }
 
         /// <summary>
-        /// 
+        /// Get account from token
         /// </summary>
         /// <param name="token"></param>
-        /// <returns></returns>
+        /// <returns>Account</returns>
         [HttpGet("token/{token}")]
         [ProducesResponseType(typeof(Models.Dto.Account), (int) HttpStatusCode.OK)]
         [ProducesResponseType((int) HttpStatusCode.BadRequest)]
         public async Task<IActionResult> GetAccountFromToken(string token)
         {
+            //Check if token is null
             if (string.IsNullOrEmpty(token))
                 return BadRequest("Token var enten tom eller ikke sat");
+            //Return account
             return Ok(_mapper.Map<Account, Models.Dto.Account>(await _accountService.GetAccountFromToken(token)));
         }
 
@@ -126,7 +131,7 @@ namespace PlayIt_Api.Controllers
         /// Login account
         /// </summary>
         /// <param name="accountSignIn"></param>
-        /// <returns></returns>
+        /// <returns>Account</returns>
         [AllowAnonymous]
         [HttpPost("signin")]
         [ProducesResponseType(typeof(AccountJwtToken), (int) HttpStatusCode.OK)]
@@ -163,7 +168,7 @@ namespace PlayIt_Api.Controllers
         /// Verify token for account
         /// </summary>
         /// <param name="tokenId"></param>
-        /// <returns></returns>
+        /// <returns>True</returns>
         [AllowAnonymous]
         [HttpGet("verify/{tokenId}")]
         [ProducesResponseType(typeof(Response), (int) HttpStatusCode.OK)]
@@ -195,7 +200,7 @@ namespace PlayIt_Api.Controllers
         /// Renew JwtToken
         /// </summary>
         /// <param name="accountId"></param>
-        /// <returns></returns>
+        /// <returns>JwtToken</returns>
         [HttpGet("renew/{accountId}")]
         [ProducesResponseType(typeof(AccountJwtToken), (int) HttpStatusCode.OK)]
         [ProducesResponseType((int) HttpStatusCode.BadRequest)]
@@ -208,7 +213,9 @@ namespace PlayIt_Api.Controllers
             {
                 //Renew JwtToken
                 AccountJwtToken token = await _accountService.RenewLoginToken(accountId);
-                return Ok(token);
+                if (token != null)
+                    return Ok(token);
+                return BadRequest("Der skete en fejl under fornyelse af token");
             }
             catch (Exception)
             {
@@ -219,8 +226,8 @@ namespace PlayIt_Api.Controllers
         /// <summary>
         /// Verify token for account
         /// </summary>
-        /// <param name="tokenId"></param>
-        /// <returns></returns>
+        /// <param name="playerJwtTokenModel"></param>
+        /// <returns>Account</returns>
         [AllowAnonymous]
         [HttpPost("verifyToken")]
         [ProducesResponseType(typeof(PlayerVerificationResponse), (int) HttpStatusCode.OK)]

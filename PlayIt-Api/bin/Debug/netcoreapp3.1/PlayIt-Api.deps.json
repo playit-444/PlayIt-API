@@ -30,6 +30,7 @@
           "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "3.1.4",
           "Microsoft.EntityFrameworkCore": "3.1.4",
           "Microsoft.EntityFrameworkCore.Design": "3.1.4",
+          "Microsoft.EntityFrameworkCore.InMemory": "3.1.4",
           "Microsoft.EntityFrameworkCore.SqlServer": "3.1.4",
           "Microsoft.EntityFrameworkCore.UnitOfWork": "3.1.0",
           "Microsoft.VisualStudio.Web.CodeGeneration.Design": "3.1.3",
@@ -781,6 +782,20 @@
         },
         "compile": {
           "lib/netstandard2.0/Microsoft.EntityFrameworkCore.Design.dll": {}
+        }
+      },
+      "Microsoft.EntityFrameworkCore.InMemory/3.1.4": {
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore": "3.1.4"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.EntityFrameworkCore.InMemory.dll": {
+            "assemblyVersion": "3.1.4.0",
+            "fileVersion": "3.100.420.21503"
+          }
+        },
+        "compile": {
+          "lib/netstandard2.0/Microsoft.EntityFrameworkCore.InMemory.dll": {}
         }
       },
       "Microsoft.EntityFrameworkCore.Relational/3.1.4": {
@@ -4127,6 +4142,13 @@
       "sha512": "sha512-vfY9sV3zJW/kwV9VBXAQlj5rky+bEI217WfurB8fct8YkQCtl+L5MCr0ej2NUOs/rpQyYsAocKU2379AyMtbVQ==",
       "path": "microsoft.entityframeworkcore.design/3.1.4",
       "hashPath": "microsoft.entityframeworkcore.design.3.1.4.nupkg.sha512"
+    },
+    "Microsoft.EntityFrameworkCore.InMemory/3.1.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-HoOvn+DANGv6g/O4KUuKUoEvu3arpw5utDuWyFOBxnbluAbVU/cfoSvEVVBsZ+/C4L7WWEqBwItUmlf35vZKCQ==",
+      "path": "microsoft.entityframeworkcore.inmemory/3.1.4",
+      "hashPath": "microsoft.entityframeworkcore.inmemory.3.1.4.nupkg.sha512"
     },
     "Microsoft.EntityFrameworkCore.Relational/3.1.4": {
       "type": "package",

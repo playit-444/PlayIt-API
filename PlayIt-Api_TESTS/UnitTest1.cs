@@ -1,8 +1,17 @@
 using System;
-using Xunit;
-using PlayIt_Api;
-using PlayIt_Api.Services.Security.Account;
+using System.Linq;
+using Arch.EntityFrameworkCore.UnitOfWork;
+using Microsoft.EntityFrameworkCore;
+using PlayIt_Api.Logging;
+using PlayIt_Api.Models.Dto;
+using PlayIt_Api.Models.Entities;
+using PlayIt_Api.Services.Account;
+using PlayIt_Api.Services.Mail;
 using PlayIt_Api.Services.Security;
+using PlayIt_Api.Services.Security.Account;
+using PlayIt_Api.Services.Token;
+using Xunit;
+
 
 namespace PlayIt_Api_TESTS
 {
@@ -25,7 +34,10 @@ namespace PlayIt_Api_TESTS
             //too short
             Assert.Throws<ArgumentOutOfRangeException>(() => ps.CreatePassword("ki", out s));
             //too long
-            Assert.Throws<ArgumentOutOfRangeException>(() => ps.CreatePassword("2314353453452345234523452345345345345345tg5446un 47j7%¤/#B&/B#B&7n67567657474756756754745", out s));
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                ps.CreatePassword(
+                    "2314353453452345234523452345345345345345tg5446un 47j7%¤/#B&/B#B&7n67567657474756756754745",
+                    out s));
             //invalid character combinations
             Assert.Throws<ArgumentOutOfRangeException>(() => ps.CreatePassword("abcdefg1234", out s));
             Assert.Throws<ArgumentOutOfRangeException>(() => ps.CreatePassword("!QWerdggh", out s));
@@ -51,7 +63,7 @@ namespace PlayIt_Api_TESTS
             {
                 for (int s = 0; s < 100; s++)
                 {
-                    //salt on the same index will be the same ofcourse, so skip this
+                    //salt on the same index will be the same of course, so skip this
                     if (i == s)
                         continue;
 
@@ -67,7 +79,6 @@ namespace PlayIt_Api_TESTS
                     }
                 }
             }
-
             Assert.False(saltsMatch);
         }
 
@@ -101,15 +112,71 @@ namespace PlayIt_Api_TESTS
         }
 
         [Fact]
-        public void user_service_creates_new_user_correctly()
+        public async void account_service_creates_new_user_correctly()
         {
+            string dbName = Guid.NewGuid().ToString();
+            DbContextOptions<PlayItContext> options = new DbContextOptionsBuilder<PlayItContext>()
+                .UseInMemoryDatabase(databaseName: dbName).Options;
+            var unitOfWork = new UnitOfWork<PlayItContext>(new PlayItContext(options));
+            var dbLogger = new DbExceptionLogger(unitOfWork);
 
+            IAccountService aService = new AccountService(new PasswordService(new SHA512HashingService(), 8, 32),
+                unitOfWork,
+                new TokenService(unitOfWork, dbLogger), new MailService(), dbLogger);
+
+            var accountSignUp = new AccountSignUp("info@444.dk", "TestUserName", "123123Asda!as", "");
+            var accountSignUpFail = new AccountSignUp("", "", "", "");
+
+            //Success
+            var account = await aService.CreateAccount(accountSignUp);
+            Assert.True(account.Entity != null);
+
+            //AccountSignUp Null
+            await Assert.ThrowsAsync<NullReferenceException>(() =>
+                null);
+
+            //userName parameter null or empty
+            await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+                await aService.CreateAccount(accountSignUpFail));
+
+            //Email parameter null or empty
+            accountSignUpFail.UserName = "Info Bruger";
+            await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+                await aService.CreateAccount(accountSignUpFail));
+
+            //Password parameter null or empty
+            accountSignUpFail.Email = "info@444.dk";
+            await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+                await aService.CreateAccount(accountSignUpFail));
+
+            accountSignUpFail.Password = "abc!2ASdassdass";
+            Assert.True(await aService.CreateAccount(accountSignUpFail) != null);
         }
 
         [Fact]
-        public void user_gets_verified_correctly()
+        public async void account_gets_verified_correctly()
         {
+            string dbName = Guid.NewGuid().ToString();
+            DbContextOptions<PlayItContext> options = new DbContextOptionsBuilder<PlayItContext>()
+                .UseInMemoryDatabase(databaseName: dbName).Options;
+            var unitOfWork = new UnitOfWork<PlayItContext>(new PlayItContext(options));
+            var dbLogger = new DbExceptionLogger(unitOfWork);
 
+            IAccountService aService = new AccountService(new PasswordService(new SHA512HashingService(), 8, 32),
+                unitOfWork,
+                new TokenService(unitOfWork, dbLogger), new MailService(), dbLogger);
+
+            //Create an account
+            var accountSignUp = new AccountSignUp("info@444.dk", "TestUserName", "123123Asda!as", "");
+            var account = await aService.CreateAccount(accountSignUp);
+
+            //Token verified success
+            Assert.True(await aService.VerifyAccount(account.Entity.Token.First().TokenId) != null);
+            Assert.True((await aService.VerifyAccount(account.Entity.Token.First().TokenId)).Verified);
+
+            //Token does not exists
+            await Assert.ThrowsAsync<NullReferenceException>(async () =>
+                await aService.VerifyAccount("a"));
         }
     }
 }

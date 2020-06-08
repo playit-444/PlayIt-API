@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PlayIt_Api.Models.Dto;
@@ -11,9 +11,9 @@ using PlayIt_Api.Services.Game;
 namespace PlayIt_Api.Controllers
 {
     /// <summary>
-    /// Controller responsible for CRUD Account
+    /// Controller responsible for CRUD Game
     /// </summary>
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class GameController : ControllerBase
@@ -29,12 +29,12 @@ namespace PlayIt_Api.Controllers
         }
 
         /// <summary>
-        /// GameServer created a new GameRoom
-        /// Saved in static list
+        /// GameServer create a new GameRoom
+        /// Saves in static list
         /// </summary>
         /// <param name="roomData"></param>
-        /// <returns></returns>
-        // TODO Enable security
+        /// <returns>RoomData</returns>
+        // TODO security
         [HttpPost]
         [ProducesResponseType(typeof(RoomData), (int) HttpStatusCode.OK)]
         [ProducesResponseType((int) HttpStatusCode.BadRequest)]
@@ -74,8 +74,8 @@ namespace PlayIt_Api.Controllers
         /// Update GameLobby data with data from gameServer
         /// </summary>
         /// <param name="roomData"></param>
-        /// <returns></returns>
-        // TODO Enable security
+        /// <returns>RoomData</returns>
+        // TODO security
         [HttpPut]
         [ProducesResponseType(typeof(IRoomData), (int) HttpStatusCode.OK)]
         [ProducesResponseType((int) HttpStatusCode.BadRequest)]
@@ -113,11 +113,11 @@ namespace PlayIt_Api.Controllers
         }
 
         /// <summary>
-        ///
+        /// Delete Room
         /// </summary>
         /// <param name="roomData"></param>
         /// <returns></returns>
-        // TODO Enable security
+        // TODO security
         [HttpDelete("{roomId}")]
         [ProducesResponseType(typeof(RoomData), (int) HttpStatusCode.OK)]
         [ProducesResponseType((int) HttpStatusCode.BadRequest)]
@@ -146,10 +146,10 @@ namespace PlayIt_Api.Controllers
         }
 
         /// <summary>
-        ///
+        /// Get all games with specific gameType
         /// </summary>
         /// <param name="gameTypeId"></param>
-        /// <returns></returns>
+        /// <returns>ListRoomData</returns>
         [HttpGet("{gameTypeId}")]
         [ProducesResponseType(typeof(IList<RoomData>), (int) HttpStatusCode.OK)]
         [ProducesResponseType(typeof(Response), (int) HttpStatusCode.NotFound)]
@@ -177,9 +177,10 @@ namespace PlayIt_Api.Controllers
 
 
         /// <summary>
-        ///
+        /// Get a list of players for each gameType
         /// </summary>
-        /// <returns></returns>
+        /// <returns>List GamePlayerCount</returns>
+        // TODO security
         [HttpGet("CountPlayers")]
         [ProducesResponseType(typeof(IList<GamePlayerCount>), (int) HttpStatusCode.OK)]
         [ProducesResponseType(typeof(Response), (int) HttpStatusCode.NotFound)]
@@ -196,6 +197,10 @@ namespace PlayIt_Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Server close so close all room for the specific server
+        /// </summary>
+        /// <returns>Success</returns>
         [HttpDelete("serverClose")]
         [ProducesResponseType(typeof(string), (int) HttpStatusCode.OK)]
         [ProducesResponseType((int) HttpStatusCode.BadRequest)]

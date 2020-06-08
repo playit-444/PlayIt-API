@@ -145,3 +145,4 @@ C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-Api\PlayIt-Api\bin\Debug
 C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-Api\PlayIt-Api\bin\Debug\netcoreapp3.1\Swashbuckle.AspNetCore.Swagger.dll
 C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-Api\PlayIt-Api\bin\Debug\netcoreapp3.1\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-Api\PlayIt-Api\bin\Debug\netcoreapp3.1\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\Christoffer\RiderProjects\RiderProjects\PlayIt-Api\PlayIt-Api\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.InMemory.dll

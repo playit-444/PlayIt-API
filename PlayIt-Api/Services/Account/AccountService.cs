@@ -141,9 +141,8 @@ namespace PlayIt_Api.Services.Account
                 // Returns the url path to the image.
                 return $"https://image.444.dk/players/{username}/Avatar.{format}";
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                _logger.Log(e.ToString());
                 return $"https://image.444.dk/players/no-image/no-user-image.png";
             }
         }

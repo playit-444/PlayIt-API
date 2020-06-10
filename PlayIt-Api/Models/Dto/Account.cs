@@ -1,4 +1,4 @@
-﻿namespace PlayIt_Api.Models.Dto
+﻿﻿namespace PlayIt_Api.Models.Dto
 {
     public class Account
     {

@@ -115,7 +115,7 @@ namespace PlayIt_Api.Controllers
         /// <summary>
         /// Delete Room
         /// </summary>
-        /// <param name="roomData"></param>
+        /// <param name="roomId"></param>
         /// <returns></returns>
         // TODO security
         [HttpDelete("{roomId}")]
@@ -180,7 +180,7 @@ namespace PlayIt_Api.Controllers
         /// Get a list of players for each gameType
         /// </summary>
         /// <returns>List GamePlayerCount</returns>
-        // TODO security
+        [AllowAnonymous]
         [HttpGet("CountPlayers")]
         [ProducesResponseType(typeof(IList<GamePlayerCount>), (int) HttpStatusCode.OK)]
         [ProducesResponseType(typeof(Response), (int) HttpStatusCode.NotFound)]

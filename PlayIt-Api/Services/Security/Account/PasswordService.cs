@@ -7,9 +7,9 @@ namespace PlayIt_Api.Services.Security.Account
 {
     public class PasswordService : IPasswordService
     {
-        private readonly string passwordPattern;
-        private int minLength, maxLength;
-        private IHashingService hashingService;
+        private readonly string _passwordPattern;
+        private int _minLength, _maxLength;
+        private readonly IHashingService _hashingService;
 
         public PasswordService(
             [FromServices]IHashingService service,
@@ -18,14 +18,14 @@ namespace PlayIt_Api.Services.Security.Account
         {
             this.MinLength = min;
             this.MaxLength = max;
-            this.hashingService = service;
+            this._hashingService = service;
 
-            this.passwordPattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{" + minLength + "," + maxLength + "}$";
+            this._passwordPattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{" + _minLength + "," + _maxLength + "}$";
         }
 
-        public int MinLength { get => minLength; private set => minLength = value; }
-        public int MaxLength { get => maxLength; private set => maxLength = value; }
-        public string PasswordPattern { get => passwordPattern;}
+        public int MinLength { get => _minLength; private set => _minLength = value; }
+        public int MaxLength { get => _maxLength; private set => _maxLength = value; }
+        public string PasswordPattern { get => _passwordPattern;}
 
         public bool ComparePasswords(in string password, in byte[] hash, in byte[] salt)
         {
@@ -36,7 +36,7 @@ namespace PlayIt_Api.Services.Security.Account
             if (salt == null || salt.Length == 0)
                 throw new ArgumentNullException(nameof(salt));
 
-            return hashingService.CompareHash(Encoding.UTF8.GetBytes(password), salt, hash);
+            return _hashingService.CompareHash(Encoding.UTF8.GetBytes(password), salt, hash);
         }
 
         public byte[] CreatePassword(in string password, out byte[] salt)
@@ -46,10 +46,10 @@ namespace PlayIt_Api.Services.Security.Account
             if (password.Length < MinLength || password.Length > MaxLength)
                 throw new ArgumentOutOfRangeException(nameof(password));
 
-            if (!Regex.IsMatch(password, passwordPattern))
+            if (!Regex.IsMatch(password, _passwordPattern))
                 throw new ArgumentOutOfRangeException(nameof(password));
             else
-                return hashingService.CreateHash(Encoding.UTF8.GetBytes(password), out salt);
+                return _hashingService.CreateHash(Encoding.UTF8.GetBytes(password), out salt);
         }
     }
 }

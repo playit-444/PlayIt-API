@@ -7,7 +7,7 @@
         /// </summary>
         /// <param name="subject"></param>
         /// <param name="body"></param>
-        /// <param name="toMail"></param>
+        /// <param name="to"></param>
         void SendMail(string subject, string body, string to);
     }
 }

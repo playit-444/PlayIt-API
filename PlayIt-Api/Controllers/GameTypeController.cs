@@ -27,9 +27,9 @@ namespace PlayIt_Api.Controllers
         }
 
         /// <summary>
-        /// Get gameTypes from database
+        /// Get gameTypes
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A list of gameTypes objects</returns>
         [AllowAnonymous]
         [HttpGet]
         [ProducesResponseType(typeof(IPagedList<GameType>), (int) HttpStatusCode.OK)]
@@ -53,9 +53,9 @@ namespace PlayIt_Api.Controllers
         }
 
         /// <summary>
-        /// Get gameTypes id and name from database used for gameServer
+        /// Get gameTypes simple with id, name, max and minimum
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A List with simple gameTypes information</returns>
         [AllowAnonymous]
         [HttpGet("Simple")]
         [ProducesResponseType(typeof(ICollection<GameTypeSimple>), (int) HttpStatusCode.OK)]
@@ -79,9 +79,9 @@ namespace PlayIt_Api.Controllers
         }
 
         /// <summary>
-        /// Get specific gameType
+        /// Get a specific gameType
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The gameType that was queried for</returns>
         [AllowAnonymous]
         [HttpGet("{gameTypeId}")]
         [ProducesResponseType(typeof(GameType), (int) HttpStatusCode.OK)]

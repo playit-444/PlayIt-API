@@ -29,16 +29,57 @@ namespace PlayIt_Api.Controllers
         }
 
         /// <summary>
-        /// GameServer create a new GameRoom
+        /// Create a new GameRoom
         /// Saves in static list
         /// </summary>
         /// <param name="roomData"></param>
-        /// <returns>RoomData</returns>
+        /// <returns>The added GameRoom</returns>
         // TODO security
         [HttpPost]
-        [ProducesResponseType(typeof(RoomData), (int) HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(IRoomData), (int) HttpStatusCode.OK)]
         [ProducesResponseType((int) HttpStatusCode.BadRequest)]
         public IActionResult CreateGameLobby(RoomData roomData)
+        {
+            //Check parameters
+            if (roomData == null)
+                return BadRequest("RoomData blev ikke fundet");
+            if (string.IsNullOrEmpty(roomData.Name))
+                return BadRequest("Navn blev ikke fundet");
+            if (string.IsNullOrEmpty(roomData.RoomID))
+                return BadRequest("RoomId blev ikke fundet");
+            if (roomData.MaxUsers == 0)
+                return BadRequest("Maks brugere kan ikke være 0");
+            if (roomData.GameType == 0)
+                return BadRequest("Spil type kan ikke være 0");
+
+            try
+            {
+                //Get authentication token from server
+                var serverId = _accessor.HttpContext.Request.Headers["Authorization"].ToString();
+                if (string.IsNullOrEmpty(serverId))
+                {
+                    return BadRequest("ServerId blev ikke fundet");
+                }
+
+                _gameService.AddRoomData(serverId, roomData);
+                return Ok(roomData);
+            }
+            catch (Exception)
+            {
+                return BadRequest("Der skete en fejl ved tilføjelse af roomData");
+            }
+        }
+
+        /// <summary>
+        /// Update an existing RoomData
+        /// </summary>
+        /// <param name="roomData"></param>
+        /// <returns>The updated RoomData</returns>
+        // TODO security
+        [HttpPut]
+        [ProducesResponseType(typeof(IRoomData), (int) HttpStatusCode.OK)]
+        [ProducesResponseType((int) HttpStatusCode.BadRequest)]
+        public IActionResult UpdateGameLobby(RoomData roomData)
         {
             //Check parameters
             if (roomData == null)
@@ -61,46 +102,6 @@ namespace PlayIt_Api.Controllers
                     return BadRequest("ServerId blev ikke fundet");
                 }
 
-                _gameService.AddRoomData(serverId, roomData);
-                return Ok(roomData);
-            }
-            catch (Exception)
-            {
-                return BadRequest("An error occured while trying to add roomData");
-            }
-        }
-
-        /// <summary>
-        /// Update GameLobby data with data from gameServer
-        /// </summary>
-        /// <param name="roomData"></param>
-        /// <returns>RoomData</returns>
-        // TODO security
-        [HttpPut]
-        [ProducesResponseType(typeof(IRoomData), (int) HttpStatusCode.OK)]
-        [ProducesResponseType((int) HttpStatusCode.BadRequest)]
-        public IActionResult UpdateGameLobby(RoomData roomData)
-        {
-            //Check parameters
-            if (roomData == null)
-                return BadRequest("RoomData blev ikke fundet");
-            if (string.IsNullOrEmpty(roomData.Name))
-                return BadRequest("Navn blev ikke fundet");
-            if (string.IsNullOrEmpty(roomData.RoomID))
-                return BadRequest("RoomId blev ikke fundet");
-            if (roomData.MaxUsers == 0)
-                return BadRequest("Maks brugere kan ikke være 0");
-            if (roomData.GameType == 0)
-                return BadRequest("Gametype kan ikke være 0");
-
-            try
-            {
-                var serverId = _accessor.HttpContext.Request.Headers["Authorization"].ToString();
-                if (string.IsNullOrEmpty(serverId))
-                {
-                    return BadRequest("ServerId blev ikke fundet");
-                }
-
                 var response = _gameService.UpdateRoomData(serverId, roomData);
                 if (response)
                     return Ok(roomData);
@@ -113,13 +114,12 @@ namespace PlayIt_Api.Controllers
         }
 
         /// <summary>
-        /// Delete Room
+        /// Delete a Room
         /// </summary>
         /// <param name="roomId"></param>
-        /// <returns></returns>
         // TODO security
         [HttpDelete("{roomId}")]
-        [ProducesResponseType(typeof(RoomData), (int) HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(IRoomData), (int) HttpStatusCode.OK)]
         [ProducesResponseType((int) HttpStatusCode.BadRequest)]
         public IActionResult DeleteGameLobby(string roomId)
         {
@@ -128,6 +128,7 @@ namespace PlayIt_Api.Controllers
 
             try
             {
+                //Get authentication token from server
                 var serverId = _accessor.HttpContext.Request.Headers["Authorization"].ToString();
                 if (string.IsNullOrEmpty(serverId))
                 {
@@ -149,7 +150,7 @@ namespace PlayIt_Api.Controllers
         /// Get all games with specific gameType
         /// </summary>
         /// <param name="gameTypeId"></param>
-        /// <returns>ListRoomData</returns>
+        /// <returns>a List of all RoomData with the correct gameType</returns>
         [HttpGet("{gameTypeId}")]
         [ProducesResponseType(typeof(IList<RoomData>), (int) HttpStatusCode.OK)]
         [ProducesResponseType(typeof(Response), (int) HttpStatusCode.NotFound)]
@@ -179,7 +180,7 @@ namespace PlayIt_Api.Controllers
         /// <summary>
         /// Get a list of players for each gameType
         /// </summary>
-        /// <returns>List GamePlayerCount</returns>
+        /// <returns>A List of GamePlayerCount </returns>
         [AllowAnonymous]
         [HttpGet("CountPlayers")]
         [ProducesResponseType(typeof(IList<GamePlayerCount>), (int) HttpStatusCode.OK)]
@@ -198,9 +199,8 @@ namespace PlayIt_Api.Controllers
         }
 
         /// <summary>
-        /// Server close so close all room for the specific server
+        /// Removes all room for a the specific server
         /// </summary>
-        /// <returns>Success</returns>
         [HttpDelete("serverClose")]
         [ProducesResponseType(typeof(string), (int) HttpStatusCode.OK)]
         [ProducesResponseType((int) HttpStatusCode.BadRequest)]
@@ -208,6 +208,7 @@ namespace PlayIt_Api.Controllers
         {
             try
             {
+                //ServerId from gameServer
                 var serverId = _accessor.HttpContext.Request.Headers["Authorization"].ToString();
                 if (string.IsNullOrEmpty(serverId))
                 {

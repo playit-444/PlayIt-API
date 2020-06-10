@@ -38,7 +38,7 @@ namespace PlayIt_Api.Controllers
         /// Send email with verification link to user
         /// </summary>
         /// <param name="accountSignUp"></param>
-        /// <returns>Created user</returns>
+        /// <returns>Returns a string with a 200 code</returns>
         [AllowAnonymous]
         [HttpPost]
         [ProducesResponseType(typeof(Response), (int) HttpStatusCode.OK)]
@@ -94,10 +94,10 @@ namespace PlayIt_Api.Controllers
         }
 
         /// <summary>
-        /// Return an specific account
+        /// Quire for an account by accountId
         /// </summary>
         /// <param name="accountId"></param>
-        /// <returns>Account</returns>
+        /// <returns>The account object that was queried for</returns>
         [HttpGet("{accountId}")]
         [ProducesResponseType(typeof(Models.Dto.Account), (int) HttpStatusCode.OK)]
         [ProducesResponseType((int) HttpStatusCode.BadRequest)]
@@ -111,10 +111,10 @@ namespace PlayIt_Api.Controllers
         }
 
         /// <summary>
-        /// Get account from token
+        /// Quire for an account by Token
         /// </summary>
         /// <param name="token"></param>
-        /// <returns>Account</returns>
+        /// <returns>The account object that was queried for</returns>
         [HttpGet("token/{token}")]
         [ProducesResponseType(typeof(Models.Dto.Account), (int) HttpStatusCode.OK)]
         [ProducesResponseType((int) HttpStatusCode.BadRequest)]
@@ -128,10 +128,10 @@ namespace PlayIt_Api.Controllers
         }
 
         /// <summary>
-        /// Login account
+        /// Signin account
         /// </summary>
         /// <param name="accountSignIn"></param>
-        /// <returns>Account</returns>
+        /// <returns>The token user got assign when logged in</returns>
         [AllowAnonymous]
         [HttpPost("signin")]
         [ProducesResponseType(typeof(AccountJwtToken), (int) HttpStatusCode.OK)]
@@ -150,10 +150,10 @@ namespace PlayIt_Api.Controllers
 
             try
             {
-                //Try to login
-                var jwtToken = await _accountService.LoginAccount(accountSignIn);
-                if (jwtToken != null)
-                    return Ok(jwtToken);
+                //Login account
+                var token = await _accountService.LoginAccount(accountSignIn);
+                if (token != null)
+                    return Ok(token);
             }
             catch (Exception)
             {
@@ -165,10 +165,9 @@ namespace PlayIt_Api.Controllers
         }
 
         /// <summary>
-        /// Verify token for account
+        /// Verify email for account
         /// </summary>
         /// <param name="tokenId"></param>
-        /// <returns>True</returns>
         [AllowAnonymous]
         [HttpGet("verify/{tokenId}")]
         [ProducesResponseType(typeof(Response), (int) HttpStatusCode.OK)]
@@ -197,10 +196,10 @@ namespace PlayIt_Api.Controllers
         }
 
         /// <summary>
-        /// Renew JwtToken
+        /// Renew token
         /// </summary>
         /// <param name="accountId"></param>
-        /// <returns>JwtToken</returns>
+        /// <returns>The new Token created for account</returns>
         [HttpGet("renew/{accountId}")]
         [ProducesResponseType(typeof(AccountJwtToken), (int) HttpStatusCode.OK)]
         [ProducesResponseType((int) HttpStatusCode.BadRequest)]
@@ -224,10 +223,10 @@ namespace PlayIt_Api.Controllers
         }
 
         /// <summary>
-        /// Verify token for account
+        /// Verify if token exists in api
         /// </summary>
         /// <param name="playerJwtTokenModel"></param>
-        /// <returns>Account</returns>
+        /// <returns>The PlayerVerificationResponse there was connected to token</returns>
         [AllowAnonymous]
         [HttpPost("verifyToken")]
         [ProducesResponseType(typeof(PlayerVerificationResponse), (int) HttpStatusCode.OK)]

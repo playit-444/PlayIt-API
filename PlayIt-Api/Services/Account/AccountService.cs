@@ -43,12 +43,6 @@ namespace PlayIt_Api.Services.Account
             _logger = logger;
         }
 
-        /// <summary>
-        /// Create account
-        /// </summary>
-        /// <param name="accountSignUp"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
         public async ValueTask<EntityEntry<Models.Entities.Account>> CreateAccount(AccountSignUp accountSignUp)
         {
             if (accountSignUp == null)
@@ -67,11 +61,13 @@ namespace PlayIt_Api.Services.Account
             byte[] password = new byte[64],
                 salt = new byte[32];
 
-            EntityEntry<Models.Entities.Account> account = null;
+            EntityEntry<Models.Entities.Account> account;
+            //The avatar path
             string avatarPath = SaveAvatar(accountSignUp.Avatar, accountSignUp.UserName);
 
             try
             {
+                //Create account password
                 password = _passwordService.CreatePassword(accountSignUp.Password, out salt);
 
                 //Create customer in database
@@ -88,6 +84,7 @@ namespace PlayIt_Api.Services.Account
                 {
                     //Create Token
                     var token = await _tokenService.CreateToken(account.Entity.AccountId, 1);
+                    //Send mail to user with verification token
                     _mailService.SendMail("444.dk - Godkendelse af bruger oprettelse",
                         "<!DOCTYPE html><html>    <head>        <style>            .logo {                text-align: center;            }            .main {                text-align: center;            }            .footer {                text-align: center;            }            .btn {                display: inline-block;                font-weight: 400;                color: #212529;                text-align: center;                vertical-align: middle;                -webkit-user-select: none;                -moz-user-select: none;                -ms-user-select: none;                user-select: none;                background-color: transparent;                border: 1px solid transparent;                padding: .375rem .75rem;                font-size: 1rem;                line-height: 1.5;                border-radius: .25rem;                transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;            }            .btn-success {                color: #fff;                background-color: #28a745;                border-color: #28a745;            }            .footer span {                color: #777;            }        </style>    </head>    <body>        <div class=\"container\">            <div class=\"logo\">                <img src=\"https://image.444.dk/logo/logo-without-banner.png\" alt=\"444.dk Logo\" width=\"180\" height=\"140\">            </div>            <br>            <div class=\"main\">                <span>Tryk på godkend herunder for at verificere din email</span><br>                <a class=\"btn btn-success\" href=\"https://444.dk?token=" +
                         token.Entity.TokenId +
@@ -127,6 +124,7 @@ namespace PlayIt_Api.Services.Account
                 // Splits the string to get the image format
                 string format = avatar.Split("/")[1].Split(';')[0];
 
+                // Path to user folder
                 string path = $@"C:\inetpub\wwwroot\image.444.dk\players\{username}";
 
                 // Splits the string to get the only the image without the headers
@@ -147,11 +145,6 @@ namespace PlayIt_Api.Services.Account
             }
         }
 
-        /// <summary>
-        /// Account username exists
-        /// </summary>
-        /// <param name="userName"></param>
-        /// <returns></returns>
         public async Task<bool> AccountExists(string userName)
         {
             var accountRepo = _unitOfWork.GetRepository<Models.Entities.Account>();
@@ -159,22 +152,12 @@ namespace PlayIt_Api.Services.Account
             return await accountRepo.GetFirstOrDefaultAsync(predicate: e => e.UserName == userName) != null;
         }
 
-        /// <summary>
-        /// Account email exists
-        /// </summary>
-        /// <param name="email"></param>
-        /// <returns></returns>
         public async Task<bool> EmailExists(string email)
         {
             var accountRepo = _unitOfWork.GetRepository<Models.Entities.Account>();
             return await accountRepo.GetFirstOrDefaultAsync(predicate: e => e.Email == email) != null;
         }
 
-        /// <summary>
-        /// Login Account
-        /// </summary>
-        /// <param name="accountSignIn"></param>
-        /// <returns></returns>
         public async Task<AccountJwtToken> LoginAccount(AccountSignIn accountSignIn)
         {
             var accountRepo = _unitOfWork.GetRepository<Models.Entities.Account>();
@@ -184,29 +167,34 @@ namespace PlayIt_Api.Services.Account
             //TODO Config instead of value
             if (count <= 6)
             {
+                //Get account by username
                 var account =
                     await accountRepo.GetFirstOrDefaultAsync(predicate: a => a.UserName == accountSignIn.UserName);
                 if (account == null)
                 {
+                    //If account did not exists try to get with email
                     account = await accountRepo.GetFirstOrDefaultAsync(
                         predicate: a => a.Email == accountSignIn.UserName);
                 }
 
+                //Check if account is verified
                 if (account.Verified)
                 {
-                    //Compare user password with database
+                    //Compare account password with database
                     if (_passwordService.ComparePasswords(accountSignIn.Password, account.Password, account.Salt))
                     {
+                        //Return the created token for account
                         return CreateJwtToken(account);
                     }
-
-                    //Create login attempt
-                    await CreateLoginAttempt(accountSignIn);
                 }
 
+                //Create login attempt
+                await CreateLoginAttempt(accountSignIn);
                 return null;
             }
 
+            //Create login attempt
+            await CreateLoginAttempt(accountSignIn);
             return null;
         }
 
@@ -214,16 +202,19 @@ namespace PlayIt_Api.Services.Account
         /// Create JWTToken
         /// </summary>
         /// <param name="account"></param>
-        /// <returns></returns>
+        /// <returns>The token object that was created from account</returns>
         private AccountJwtToken CreateJwtToken(Models.Entities.Account account)
         {
+            //Check if customer or gameServer login in.
             var role = "customer";
             if (account.AccountId == 30)
             {
                 role = "gameServer";
             }
 
+            //Expire now +1 day
             var expire = DateTime.Now.AddDays(1);
+            //Create token with account information
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
@@ -236,6 +227,7 @@ namespace PlayIt_Api.Services.Account
                 }),
                 Expires = expire,
                 SigningCredentials = new SigningCredentials(
+                    //TODO move encryption key to config file
                     new SymmetricSecurityKey(
                         Encoding.UTF8.GetBytes("YdCnz8X4!dvLvtu8c&q*9JSd$BZD#^P5Wrb^PsvvJm5XfxbHW3X@8YD8D4^pe8nx")),
                     SecurityAlgorithms.HmacSha256Signature)
@@ -243,14 +235,15 @@ namespace PlayIt_Api.Services.Account
             var tokenHandler = new JwtSecurityTokenHandler();
             var securityToken = tokenHandler.CreateToken(tokenDescriptor);
             var token = tokenHandler.WriteToken(securityToken);
+            //Return the created token
             return new AccountJwtToken(token);
         }
 
         /// <summary>
-        /// Count login attempt
+        /// Count login attempt for the specific user
         /// </summary>
         /// <param name="accountSignIn"></param>
-        /// <returns></returns>
+        /// <returns>A count of tried login attempts</returns>
         private async Task<int> CountLoginAttempt(AccountSignIn accountSignIn)
         {
             var loginAttemptRepo = _unitOfWork.GetRepository<LoginAttempt>();
@@ -259,10 +252,9 @@ namespace PlayIt_Api.Services.Account
         }
 
         /// <summary>
-        /// Create Login Attempt
+        /// Create a new Login Attempt
         /// </summary>
         /// <param name="accountSignIn"></param>
-        /// <returns></returns>
         private async Task CreateLoginAttempt(AccountSignIn accountSignIn)
         {
             var loginAttemptRepo = _unitOfWork.GetRepository<LoginAttempt>();
@@ -271,17 +263,14 @@ namespace PlayIt_Api.Services.Account
             await _unitOfWork.SaveChangesAsync();
         }
 
-        /// <summary>
-        /// VerifyAccount with token from email
-        /// </summary>
-        /// <param name="tokenId"></param>
-        /// <returns></returns>
         public async Task<Models.Entities.Account> VerifyAccount(string tokenId)
         {
             var tokenRepo = _unitOfWork.GetRepository<Models.Entities.Token>();
             var token = await tokenRepo.FindAsync(tokenId);
+            //Check if token is expired
             if (token.Expiration < DateTime.Now) return null;
             var accountRepo = _unitOfWork.GetRepository<Models.Entities.Account>();
+            //Find the queried account
             var account = await accountRepo.FindAsync(token.AccountId);
             account.Verified = true;
             accountRepo.Update(account);
@@ -289,11 +278,6 @@ namespace PlayIt_Api.Services.Account
             return account;
         }
 
-        /// <summary>
-        /// Renew Login Token
-        /// </summary>
-        /// <param name="employeeId"></param>
-        /// <returns></returns>
         public async Task<AccountJwtToken> RenewLoginToken(int employeeId)
         {
             var accountRepo = _unitOfWork.GetRepository<Models.Entities.Account>();
@@ -303,9 +287,7 @@ namespace PlayIt_Api.Services.Account
 
         public async Task<PlayerVerificationResponse> VerifyToken(string jwtToken)
         {
-            JwtSecurityTokenHandler jwtSecurityTokenHandler;
-            jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
-
+            var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
             TokenValidationParameters validationParameters = new TokenValidationParameters()
             {
                 ValidateLifetime = false,
@@ -341,9 +323,9 @@ namespace PlayIt_Api.Services.Account
                     return new PlayerVerificationResponse(jwtToken, account.AccountId, account.UserName);
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //Logger
+                await _logger.LogAsync(e.ToString());
             }
 
             return new PlayerVerificationResponse(jwtToken, 0, "");
@@ -379,9 +361,9 @@ namespace PlayIt_Api.Services.Account
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //Logger
+                _logger.LogAsync(e.ToString());
             }
 
             return null;
@@ -399,6 +381,7 @@ namespace PlayIt_Api.Services.Account
             {
                 _unitOfWork.SaveChangesAsync(true);
                 _unitOfWork.Dispose();
+                _logger.Dispose();
             }
         }
     }

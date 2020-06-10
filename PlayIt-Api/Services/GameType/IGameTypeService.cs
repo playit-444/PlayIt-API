@@ -11,18 +11,16 @@ namespace PlayIt_Api.Services.GameType
         /// <summary>
         /// Get all game types
         /// </summary>
-        /// <returns></returns>
         Task<IPagedList<Models.Entities.GameType>> GetGameTypes();
+
         /// <summary>
-        /// Get all game types
+        /// Get all game types in a simple format
         /// </summary>
-        /// <returns></returns>
         Task<ICollection<GameTypeSimple>> GetGameTypesSimple();
 
         /// <summary>
         /// Get specific game type
         /// </summary>
-        /// <returns></returns>
         Task<Models.Entities.GameType> GetGameType(int gameTypeId);
 
     }

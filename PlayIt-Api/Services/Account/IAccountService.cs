@@ -9,66 +9,67 @@ namespace PlayIt_Api.Services.Account
     public interface IAccountService : IDisposable
     {
         /// <summary>
-        /// Create Account
+        /// Create an account
         /// </summary>
         /// <param name="accountSignUp"></param>
-        /// <returns></returns>
+        /// <returns>The created Account object </returns>
+        /// <exception cref="ArgumentNullException"></exception>
         ValueTask<EntityEntry<Models.Entities.Account>> CreateAccount(AccountSignUp accountSignUp);
 
         /// <summary>
-        /// Account username exists
+        /// Check if account username already exists
         /// </summary>
         /// <param name="userName"></param>
-        /// <returns></returns>
+        /// <returns>true false depending if user already exists</returns>
         Task<bool> AccountExists(string userName);
 
         /// <summary>
-        /// Account email exists
+        /// check if account email already exists
         /// </summary>
         /// <param name="email"></param>
-        /// <returns></returns>
+        /// <returns>true false depending is user already exists</returns>
         Task<bool> EmailExists(string email);
 
         /// <summary>
-        /// Login account exists
+        /// Login Account
         /// </summary>
         /// <param name="accountSignIn"></param>
-        /// <returns></returns>
+        /// <returns>A token linked to the account loggede in</returns>
         Task<AccountJwtToken> LoginAccount(AccountSignIn accountSignIn);
 
         /// <summary>
-        /// Verify Account
+        /// VerifyAccount account with token from email
         /// </summary>
         /// <param name="tokenId"></param>
-        /// <returns></returns>
+        /// <returns>The Account verified by the token</returns>
         Task<Models.Entities.Account> VerifyAccount(string tokenId);
 
         /// <summary>
         /// Renew Login Token
         /// </summary>
         /// <param name="employeeId"></param>
-        /// <returns></returns>
+        /// <returns>The new token object created from account</returns>
         Task<AccountJwtToken> RenewLoginToken(int employeeId);
 
         /// <summary>
-        /// Verify if token is valid
+        /// Verify if the token given is legit and exists on the server.
         /// </summary>
         /// <param name="jwtToken"></param>
-        /// <returns></returns>
+        /// <returns>The token, account and username there was linked with the given token</returns>
         Task<PlayerVerificationResponse> VerifyToken(string jwtToken);
 
         /// <summary>
-        /// Get Account from
+        /// Get the specific account that was queried for
         /// </summary>
         /// <param name="accountId"></param>
-        /// <returns></returns>
+        /// <returns>The account object that was queried for</returns>
         Task<Models.Entities.Account> GetAccount(long accountId);
 
         /// <summary>
         /// Get account information from token
         /// </summary>
         /// <param name="token"></param>
-        /// <returns></returns>
+        /// <returns>The account object that was queried for</returns>
         Task<Models.Entities.Account> GetAccountFromToken(string token);
     }
 }

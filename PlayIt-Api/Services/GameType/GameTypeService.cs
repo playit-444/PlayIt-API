@@ -27,6 +27,7 @@ namespace PlayIt_Api.Services.GameType
         public async Task<IPagedList<Models.Entities.GameType>> GetGameTypes()
         {
             var gameRepo = _unitOfWork.GetRepository<Models.Entities.GameType>();
+            //Get a pages list of gameTypes
             return await gameRepo.GetPagedListAsync();
         }
 
@@ -34,6 +35,8 @@ namespace PlayIt_Api.Services.GameType
         {
             var gameTypes = await GetGameTypes();
             var gameTypeSimples = new List<GameTypeSimple>();
+
+            //Loop all gameTypes and get simple information
             foreach (var gameType in gameTypes.Items)
             {
                 gameTypeSimples.Add(new GameTypeSimple(gameType.GameTypeId, gameType.Name, gameType.MaxPlayers,
@@ -61,6 +64,7 @@ namespace PlayIt_Api.Services.GameType
             {
                 _unitOfWork.SaveChangesAsync(true);
                 _unitOfWork.Dispose();
+                _logger.Dispose();
             }
         }
     }

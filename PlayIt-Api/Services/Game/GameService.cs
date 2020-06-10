@@ -30,8 +30,10 @@ namespace PlayIt_Api.Services.Game
 
             lock (_roomDatas)
             {
+                //Loop through dictionary
                 foreach (var roomData in _roomDatas)
                 {
+                    //Add to temp list
                     games.AddRange(roomData.Value.Where(a => a.GameType == gameType));
                 }
             }
@@ -45,10 +47,13 @@ namespace PlayIt_Api.Services.Game
 
             lock (_roomDatas)
             {
+                //loop through dictionary
                 foreach (var roomData in _roomDatas)
                 {
+                    //Loop all values
                     foreach (var room in roomData.Value)
                     {
+                        //Check if GameType already exists in list
                         var gamePlayerCount = games.SingleOrDefault(a => a.GameTypeId == room.GameType);
                         if (gamePlayerCount == null)
                         {
@@ -69,11 +74,13 @@ namespace PlayIt_Api.Services.Game
         {
             lock (_roomDatas)
             {
+                //Check if gameServer does not exists
                 if (!_roomDatas.ContainsKey(serverId))
                 {
                     _roomDatas[serverId] = new List<IRoomData> {roomData};
                 }
 
+                //Check if room already exists
                 if (!_roomDatas[serverId].Contains(roomData))
                     _roomDatas[serverId].Add(roomData);
             }
@@ -83,10 +90,13 @@ namespace PlayIt_Api.Services.Game
         {
             lock (_roomDatas)
             {
+                //Check if gameServer exists
                 if (_roomDatas.ContainsKey(serverId))
                 {
+                    //Loop all rooms for the specific gameServer
                     foreach (var room in _roomDatas[serverId])
                     {
+                        //Check if roomId matches the request to be remove
                         if (room.RoomID == roomId)
                         {
                             _roomDatas[serverId].Remove(room);
@@ -103,8 +113,10 @@ namespace PlayIt_Api.Services.Game
         {
             lock (_roomDatas)
             {
+                //Check if gameServer exists
                 if (_roomDatas.ContainsKey(serverId))
                 {
+                    //Update information about the room
                     var room = _roomDatas[serverId].Single(r => r.RoomID == roomData.RoomID);
                     room.CurrentUsers = roomData.CurrentUsers;
                     return true;
@@ -118,6 +130,7 @@ namespace PlayIt_Api.Services.Game
         {
             lock (_roomDatas)
             {
+                //Check if gameServer exists
                 if (_roomDatas.ContainsKey(serverId))
                 {
                     _roomDatas.Remove(serverId);
@@ -138,6 +151,7 @@ namespace PlayIt_Api.Services.Game
         {
             if (disposing)
             {
+                _logger.Dispose();
             }
         }
     }

@@ -29,11 +29,11 @@ namespace PlayIt_Api.Services.Token
         {
             //Create token
             var accountRepo = _unitOfWork.GetRepository<Models.Entities.Token>();
-
             EntityEntry<Models.Entities.Token> token = null;
 
             try
             {
+                // Create new token
                 token = await accountRepo.InsertAsync(new Models.Entities.Token
                 {
                     Created = DateTime.Now, TokenTypeId = tokenType, Expiration = DateTime.Now.AddHours(12),
@@ -61,6 +61,7 @@ namespace PlayIt_Api.Services.Token
             {
                 _unitOfWork.SaveChangesAsync();
                 _unitOfWork.Dispose();
+                _logger.Dispose();
             }
         }
     }
